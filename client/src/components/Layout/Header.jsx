@@ -1,12 +1,13 @@
 import {
   AppBar,
+  Backdrop,
   Box,
   IconButton,
   Toolbar,
   Tooltip,
   Typography,
 } from "@mui/material";
-import React from "react";
+import React, { Suspense, useState } from "react";
 import { orange } from "../../constants/color";
 import {
   Menu as MenuIcon,
@@ -18,8 +19,18 @@ import {
 } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 
+const SearchDialog = React.lazy(() => import("../specific/Search"));
+const NotificationsDialog = React.lazy(() =>
+  import("../specific/Notifications")
+);
+const NewGroupDialog = React.lazy(() => import("../specific/NewGroup"));
+
+// import SearchDialog from;
+
 const Header = () => {
   const navigate = useNavigate();
+
+  const [isSearch, setIsSearch] = useState(true);
 
   function handleMobile() {
     console.log(" mobile");
@@ -103,6 +114,24 @@ const Header = () => {
           </Toolbar>
         </AppBar>
       </Box>
+
+      {isSearch && (
+        <Suspense fallback={<Backdrop></Backdrop>}>
+          <SearchDialog></SearchDialog>
+        </Suspense>
+      )}
+      {/* notification */}
+      {isSearch && (
+        <Suspense fallback={<Backdrop></Backdrop>}>
+          <NotificationsDialog></NotificationsDialog>
+        </Suspense>
+      )}
+      {/* newGroup */}
+      {isSearch && (
+        <Suspense fallback={<Backdrop></Backdrop>}>
+          <NewGroupDialog></NewGroupDialog>
+        </Suspense>
+      )}
     </>
   );
 };
