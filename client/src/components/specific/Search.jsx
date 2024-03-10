@@ -16,14 +16,14 @@ const users = [1, 2, 3, 4];
 const Search = () => {
   const [searchText, setSearchText] = useState("");
 
-  const addFriendHandler =()=>{
+  const addFriendHandler = () => {
     console.log("d");
-  }
+  };
 
-  const isLoadingSendFriendRequest =false
+  const isLoadingSendFriendRequest = false;
 
   return (
-    <Dialog open>
+    <Dialog open={false}>
       <Stack
         padding={"2rem"}
         direction={"column"}

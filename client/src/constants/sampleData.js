@@ -30,3 +30,22 @@ export const sampleNotifications = [
     _id: "1",
   },
 ];
+
+export const sampleMessage = [
+  {
+    attachments: [
+      {
+        public_id: "abcd",
+        url: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=2080&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      },
+    ],
+    content: "bohat h*r*mi ho beta!",
+    _id: "asdfghjklo",
+    sender: {
+      _id: "user._id",
+      name: "user.name",
+    },
+    chat: "ChatId",
+    createdAt: "2024-03-10T08:19:44.582Z",
+  },
+];

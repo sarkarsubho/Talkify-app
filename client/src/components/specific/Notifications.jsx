@@ -13,7 +13,7 @@ import { sampleNotifications } from "../../constants/sampleData";
 const Notifications = () => {
   const friendRequestHandler = ({ _id, accept }) => {};
   return (
-    <Dialog open={true}>
+    <Dialog open={false}>
       <Stack p={{ xs: "1rem", sm: "2rem" }} maxWidth={"25rem"}>
         <DialogTitle>Notifications</DialogTitle>
         {sampleNotifications.length > 0 ? (
