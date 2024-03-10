@@ -116,19 +116,19 @@ const Header = () => {
       </Box>
 
       {isSearch && (
-        <Suspense fallback={<Backdrop></Backdrop>}>
+        <Suspense fallback={<Backdrop open></Backdrop>}>
           <SearchDialog></SearchDialog>
         </Suspense>
       )}
       {/* notification */}
       {isSearch && (
-        <Suspense fallback={<Backdrop></Backdrop>}>
+        <Suspense fallback={<Backdrop open></Backdrop>}>
           <NotificationsDialog></NotificationsDialog>
         </Suspense>
       )}
       {/* newGroup */}
       {isSearch && (
-        <Suspense fallback={<Backdrop></Backdrop>}>
+        <Suspense fallback={<Backdrop open></Backdrop>}>
           <NewGroupDialog></NewGroupDialog>
         </Suspense>
       )}
