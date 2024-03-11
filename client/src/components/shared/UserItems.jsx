@@ -10,7 +10,13 @@ import {
 } from "@mui/material";
 import React, { memo } from "react";
 
-const UserItems = ({ user, handler, handlerIsLoading, isAdded = false }) => {
+const UserItems = ({
+  user,
+  handler,
+  handlerIsLoading,
+  isAdded = false,
+  styling = {},
+}) => {
   return (
     <ListItem>
       <Stack
@@ -18,6 +24,7 @@ const UserItems = ({ user, handler, handlerIsLoading, isAdded = false }) => {
         alignItems={"center"}
         spacing={"1rem"}
         width={"100%"}
+        {...styling}
       >
         <Avatar></Avatar>
         <Typography

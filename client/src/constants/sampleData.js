@@ -49,3 +49,20 @@ export const sampleMessage = [
     createdAt: "2024-03-10T08:19:44.582Z",
   },
 ];
+
+export const sampleUsers = [
+  {
+    avatar: [
+      "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=2080&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    ],
+    name: "john deo",
+    _id: "1",
+  },
+  {
+    avatar: [
+      "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=2080&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    ],
+    name: "john dick",
+    _id: "2",
+  },
+];
