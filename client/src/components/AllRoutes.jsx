@@ -14,11 +14,11 @@ export const AllRoutes = () => {
   return (
     <Suspense fallback={<LayoutLoader></LayoutLoader>}>
       <Routes>
-        <Route element={<ProtectRoute user={true}></ProtectRoute>}>
+        <Route path="/" element={<ProtectRoute user={true}></ProtectRoute>}>
           {" "}
-          <Route path="/" element={<Home></Home>}></Route>
-          <Route path="/groups" element={<Groups />}></Route>
-          <Route path="/chat/:chatId" element={<Chat></Chat>}></Route>
+          <Route path="" element={<Home></Home>}></Route>
+          <Route path="groups" element={<Groups />}></Route>
+          <Route path="chat/:chatId" element={<Chat></Chat>}></Route>
         </Route>
         {/* if already loged in should not able to visit login again  */}
         <Route

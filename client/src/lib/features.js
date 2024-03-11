@@ -15,7 +15,7 @@ const fileFormat = (url) => {
   return "file";
 };
 
-const transFormImage =(url="")=>url;
+const transFormImage =(url="",width=100)=>url;
 
 
-export { fileFormat };
+export { fileFormat,transFormImage };

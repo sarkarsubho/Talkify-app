@@ -3,6 +3,7 @@ import React, { memo } from "react";
 import { lightBlue } from "../../constants/color";
 import moment from "moment";
 import { fileFormat } from "../../lib/features";
+import RendedAttachment from "./RendedAttachment";
 
 const MessageComponent = ({ message, user }) => {
   const { attachments, content, _id, sender, chat, createdAt } = message;
@@ -35,7 +36,7 @@ const MessageComponent = ({ message, user }) => {
           const url = attachment.url;
           const file = fileFormat(url);
           return (
-            <Box>
+            <Box key={i}>
               <a
                 href=""
                 target="_blank"
@@ -43,7 +44,9 @@ const MessageComponent = ({ message, user }) => {
                 style={{
                   color: "black",
                 }}
-              ></a>
+              >
+                {<RendedAttachment file={file} url={url}></RendedAttachment>}
+              </a>
             </Box>
           );
         })}

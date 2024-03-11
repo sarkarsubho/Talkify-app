@@ -3,6 +3,6 @@ import React from 'react'
 
 export const FileMenu = () => {
   return (
-    <Menu open>FileMenu</Menu>
+    <Menu open={false}>FileMenu</Menu>
   )
 }
