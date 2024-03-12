@@ -1,6 +1,7 @@
 import { Stack } from "@mui/material";
 import React from "react";
 import ChatItem from "../shared/ChatItem";
+import { backgroundGradient } from "../../constants/color";
 
 const ChatList = ({
   w = "100%",
@@ -16,7 +17,9 @@ const ChatList = ({
   handleDeleteChat,
 }) => {
   return (
-    <Stack w={w} direction={"column"}>
+    <Stack w={w} direction={"column"} overflow={"auto"} height={"100%"} sx={{
+      // backgroundImage:backgroundGradient
+    }}>
       {chats?.map((e, i) => {
         const { avatar, name, _id, groupChat, members } = e;
         const newMessageAlert = newMessagesAlert.find(
@@ -34,7 +37,7 @@ const ChatList = ({
             groupChat={groupChat}
             sameSender={chatId === _id}
             handleDeleteChat={handleDeleteChat}
-            _id ={_id}
+            _id={_id}
           ></ChatItem>
         );
       })}
