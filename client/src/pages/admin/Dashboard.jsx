@@ -14,6 +14,7 @@ import {
   SearchField,
 } from "../../components/styles/StyledComponents";
 import { matBlack } from "../../constants/color";
+import { DoughnutChart, LineChart } from "../../components/specific/Charts";
 
 const Dashboard = () => {
   const AppBar = (
@@ -71,7 +72,21 @@ const Dashboard = () => {
     <AdminLayout>
       <Container component={"main"}>
         {AppBar}
-        <Stack direction={"row"} spacing={"2rem"} flexWrap={"wrap"}>
+        <Stack
+          direction={{
+            xs: "column",
+            lg: "row",
+          }}
+          flexWrap={"wrap"}
+          justifyContent={"center"}
+          alignItems={{
+            xs: "center",
+            lg: "stretch",
+          }}
+          sx={{
+            gap: "2rem",
+          }}
+        >
           <Paper
             elevation={3}
             sx={{
@@ -82,7 +97,7 @@ const Dashboard = () => {
             }}
           >
             <Typography>Last Messages</Typography>
-            {"chat"}
+            <LineChart value={[1, 12, 18, 9]}></LineChart>
           </Paper>
           <Paper
             elevation={3}
@@ -102,7 +117,10 @@ const Dashboard = () => {
               height: "25rem",
             }}
           >
-            {"Donut Chart "}
+            <DoughnutChart
+              labels={["Single Chat", "Group Chat"]}
+              value={[32, 56]}
+            />
             <Stack
               position={"absolute"}
               direction={"row"}
