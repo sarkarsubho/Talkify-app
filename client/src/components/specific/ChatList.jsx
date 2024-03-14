@@ -2,6 +2,7 @@ import { Stack } from "@mui/material";
 import React from "react";
 import ChatItem from "../shared/ChatItem";
 import { backgroundGradient } from "../../constants/color";
+import { Link } from "react-router-dom";
 
 const ChatList = ({
   w = "100%",
@@ -20,12 +21,14 @@ const ChatList = ({
     <Stack w={w} direction={"column"} overflow={"auto"} height={"100%"} sx={{
       // backgroundImage:backgroundGradient
     }}>
-      {chats?.map((e, i) => {
+      {
+       chats?.map((e, i) => {
         const { avatar, name, _id, groupChat, members } = e;
         const newMessageAlert = newMessagesAlert.find(
           ({ chatId }) => chatId === _id
         );
-
+        
+        console.log(e);
         const isOnline = true;
         return (
           <ChatItem

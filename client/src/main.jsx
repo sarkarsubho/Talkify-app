@@ -8,13 +8,13 @@ import { BrowserRouter } from "react-router-dom";
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <HelmetProvider>
-      <BrowserRouter>
+      {/* <BrowserRouter> */}
         <CssBaseline />
         {/* using preventDefault on app context menu to prevent the right click behavior in the app  */}
         <div onContextMenu={(e) => e.preventDefault()}>
           <App />
         </div>
-      </BrowserRouter>
+      {/* </BrowserRouter> */}
     </HelmetProvider>
   </React.StrictMode>
 );

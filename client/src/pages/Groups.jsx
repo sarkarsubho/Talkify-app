@@ -347,4 +347,5 @@ const GroupListItem = memo(({ group, chatId }) => {
   );
 });
 
-export default AppLayout()(Groups);
+export default Groups;
+// export default AppLayout()(Groups);
