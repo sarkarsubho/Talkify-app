@@ -29,9 +29,9 @@ export const AllRoutes = () => {
           <Route element={<ProtectRoute user={true}></ProtectRoute>}>
             {" "}
             <Route path="/" element={<Home />} />
-            <Route path="/chat/:chatId" element={<Chat />} />
             <Route path="/groups" element={<Groups />} />
           </Route>
+          <Route path="/chat/:chatId" element={<Chat />} />
           {/* if already loged in should not able to visit login again  */}
           <Route
             path="/login"
