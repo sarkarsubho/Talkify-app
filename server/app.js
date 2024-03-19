@@ -3,6 +3,7 @@ import cors from "cors";
 import userRoute from "./routes/user.routes.js";
 import { connectDB } from "./utils/features.js";
 import dotenv from "dotenv";
+import { errorMiddleware } from "./middlewares/error.js";
 
 dotenv.config({
   path: "./.env",
@@ -28,8 +29,8 @@ app.get("/", (req, res) => {
   );
 });
 
-
-app.listen(3000, () => {
+app.use(errorMiddleware)
+app.listen(port, () => {
   try {
     console.log(`Server is running on port ${port}`);
   } catch (error) {

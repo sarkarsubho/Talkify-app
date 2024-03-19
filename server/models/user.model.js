@@ -1,3 +1,4 @@
+import { hash } from "bcrypt";
 import mongoose, { Schema, model } from "mongoose";
 
 const userSchema = new Schema(
@@ -7,11 +8,19 @@ const userSchema = new Schema(
     bio: { type: String, required: true },
     password: { type: String, required: true, select: false },
     avatar: {
-      public_id: { type: String, required: true },
-      url: { type: String, required: true },
+      public_id: { type: String, required: false },
+      url: { type: String, required: false },
     },
   },
   { timestamps: true, versionKey: false }
 );
+
+
+userSchema.pre("save", async function (cb) {
+  if (!this.isModified("password")) {
+    cb();
+  }
+  this.password = await hash(this.password, 10);
+});
 
 export const User = mongoose.models.User || model("User", userSchema);
