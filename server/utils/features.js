@@ -1,6 +1,12 @@
 import mongoose from "mongoose";
 import jwt from "jsonwebtoken";
 
+const cookieOptions={
+  maxAge: 10 * 24 * 60 * 60 * 1000,
+  sameSite:"none",
+  httpOnly:true,
+  secure:true
+};
 
 const connectDB = async(uri) => {
   return mongoose
@@ -18,12 +24,7 @@ const sendToken = (res, user, code, message) => {
 
   return res
     .status(code)
-    .cookie("cookie-token", token, {
-      maxAge: 24 * 60 * 60 * 1000,
-      sameSite:"none",
-      httpOnly:true,
-      secure:true
-    })
+    .cookie("Talkify-token", token, cookieOptions)
     .json({
       success: true,
       token,
@@ -32,4 +33,10 @@ const sendToken = (res, user, code, message) => {
     });
 };
 
-export { connectDB ,sendToken};
+
+const emitEvent =(req,event,users,data)=>{
+console.log("emeting Event...",event);
+}
+
+
+export { connectDB ,sendToken , cookieOptions,emitEvent};
