@@ -6,7 +6,7 @@ import { connectDB } from "./utils/features.js";
 import dotenv from "dotenv";
 import { errorMiddleware } from "./middlewares/error.js";
 import cookieParser from "cookie-parser";
-
+import { createUser } from "./seedres/user.js";
 
 dotenv.config({
   path: "./.env",
@@ -17,6 +17,10 @@ console.log(mongoURI);
 const app = express();
 
 connectDB(mongoURI);
+
+// creating fake user for test
+// createUser(10);
+
 app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
@@ -35,7 +39,7 @@ app.get("/", (req, res) => {
   );
 });
 
-app.use(errorMiddleware)
+app.use(errorMiddleware);
 app.listen(port, () => {
   try {
     console.log(`Server is running on port ${port}`);
