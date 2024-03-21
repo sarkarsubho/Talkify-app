@@ -338,6 +338,9 @@ const GroupListItem = memo(({ group, chatId }) => {
           e.preventDefault();
         }
       }}
+      sx={{
+        borderBottom: "2px solid gray"
+      }}
     >
       <Stack direction={"row"} spacing={"1rem"} alignItems={"center"}>
         <AvatarCard avatar={avatar}></AvatarCard>

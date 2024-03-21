@@ -2,6 +2,7 @@ import { Box, Stack, Typography } from "@mui/material";
 import React, { memo } from "react";
 import { Link } from "../styles/StyledComponents";
 import AvatarCard from "./AvatarCard";
+import { lightGreen } from "../../constants/color";
 
 const ChatItem = ({
   avatar = [],
@@ -20,6 +21,7 @@ const ChatItem = ({
       to={`../chat/${_id}`}
       sx={{
         padding: "0.5rem",
+        borderBottom: "2px solid gray"
       }}
       onContextMenu={(e) => {
         console.log("context menu opened");
@@ -53,7 +55,7 @@ const ChatItem = ({
               width: "10px",
               height: "10px",
               borderRadius: "50%",
-              backgroundColor: "green",
+              backgroundColor: lightGreen,
               position: "absolute",
               top: "50%",
               right: "1rem",
