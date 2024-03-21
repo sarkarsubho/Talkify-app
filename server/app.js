@@ -6,6 +6,7 @@ import { connectDB } from "./utils/features.js";
 import dotenv from "dotenv";
 import { errorMiddleware } from "./middlewares/error.js";
 import cookieParser from "cookie-parser";
+import { createGroupChat, createMessage, createMessageInAChat, createSingleChat } from "./seedres/chat.js";
 import { createUser } from "./seedres/user.js";
 
 dotenv.config({
@@ -20,6 +21,12 @@ connectDB(mongoURI);
 
 // creating fake user for test
 // createUser(10);
+// createSingleChat(10)
+// createGroupChat(10)
+
+// createMessage()
+// createMessageInAChat("65fbcd46232c723364c45b62",50);
+
 
 app.use(cors());
 app.use(express.json());

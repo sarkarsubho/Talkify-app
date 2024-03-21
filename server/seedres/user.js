@@ -1,6 +1,7 @@
+import { Chat } from "../models/chat.model.js";
+import { Message } from "../models/message.model.js";
 import { User } from "../models/user.model.js";
-import { faker } from "@faker-js/faker";
-
+import { faker, simpleFaker } from "@faker-js/faker";
 
 const createUser = async (numOfUser) => {
   try {
@@ -20,10 +21,9 @@ const createUser = async (numOfUser) => {
       });
 
       userPromise.push(tempUser);
-
     }
-   await Promise.all(userPromise);
-    console.log("user created",numOfUser);
+    await Promise.all(userPromise);
+    console.log("user created", numOfUser);
     process.exit(1);
   } catch (error) {
     console.log(error);
@@ -32,4 +32,5 @@ const createUser = async (numOfUser) => {
 };
 
 // createUser(10)
-export {createUser}
+
+export { createUser };

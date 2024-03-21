@@ -5,6 +5,7 @@ import {
   addMembers,
   deleteChat,
   getChatDetails,
+  getMessages,
   getMyChats,
   getMyGroups,
   leaveGroup,
@@ -30,6 +31,7 @@ router.delete("/leave/:id", leaveGroup);
 router.post("/message", attachmentMulter, sendAttachment);
 
 // get messages
+router.get("/message/:id", getMessages);
 
 
 // getChatDetails ,rename ,delete

@@ -22,7 +22,7 @@ const newUser = async (req, res) => {
 const login = tryCatch(async (req, res, next) => {
   const { username, password } = req.body;
   console.log(username);
-  // select password select the password only and select + password = select all the data with added password if not select then only the data without password only work if the only the select property added to the data model
+  // select password select the password only and select + password = select all the data with added password if not select then only the data without password
 
   const user = await User.findOne({ username }).select("+password");
 
@@ -56,21 +56,14 @@ const logout = tryCatch(async (req, res) => {
 });
 // search User
 const searchUser = tryCatch(async (req, res) => {
+  const { name } = req.query;
 
-  const {name} =req.query;
+  let searchedUser = [];
 
-
-
-  let searchedUser=[]
-
-
-
-  return res
-    .status(200)
-    .json({
-      success: true,
-     name
-    });
+  return res.status(200).json({
+    success: true,
+    name,
+  });
 });
 
-export { login, newUser, getMyProfile, logout ,searchUser};
+export { login, newUser, getMyProfile, logout, searchUser };
