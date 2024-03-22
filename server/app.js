@@ -2,6 +2,8 @@ import express from "express";
 import cors from "cors";
 import userRoute from "./routes/user.routes.js";
 import chatRoute from "./routes/chat.routes.js";
+import adminRoute from "./routes/admin.routes.js";
+
 import { connectDB } from "./utils/features.js";
 import dotenv from "dotenv";
 import { errorMiddleware } from "./middlewares/error.js";
@@ -38,6 +40,9 @@ app.use(cookieParser());
 // main routes
 app.use("/user", userRoute);
 app.use("/chat", chatRoute);
+
+// admin routes
+app.use("/admin", adminRoute);
 
 // default route / home route
 app.get("/", (req, res) => {
