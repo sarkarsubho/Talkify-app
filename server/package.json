@@ -23,7 +23,7 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.2.2",
     "multer": "^1.4.5-lts.1",
-    "soket.io": "^0.0.1-security",
+    "socket.io": "^4.7.5",
     "uuid": "^9.0.1"
   },
   "devDependencies": {

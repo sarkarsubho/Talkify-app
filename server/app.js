@@ -8,17 +8,37 @@ import { connectDB } from "./utils/features.js";
 import dotenv from "dotenv";
 import { errorMiddleware } from "./middlewares/error.js";
 import cookieParser from "cookie-parser";
-import { createGroupChat, createMessage, createMessageInAChat, createSingleChat } from "./seedres/chat.js";
+import {
+  createGroupChat,
+  createMessage,
+  createMessageInAChat,
+  createSingleChat,
+} from "./seedres/chat.js";
 import { createUser } from "./seedres/user.js";
+
+// socket io
+import { Server } from "socket.io";
+import { createServer } from "http";
+import { v4 as uuid } from "uuid";
+import { NEW_MESSAGE_ALERT, NEW_Message } from "./constants/events.js";
+import { getSockets } from "./lib/helper.js";
+import { Message } from "./models/message.model.js";
 
 dotenv.config({
   path: "./.env",
 });
+
 const mongoURI = process.env.MONGO_URI;
 const port = process.env.PORT || 3000;
-export const adminSecretKey = process.env.ADMIN_SECRET_KEY || "123abc96558";
-console.log(mongoURI);
+const adminSecretKey = process.env.ADMIN_SECRET_KEY || "123abc96558";
+
+const userSocketIds = new Map();
+
+// console.log(mongoURI);
+
 const app = express();
+const server = createServer(app);
+const io = new Server(server, {});
 
 connectDB(mongoURI);
 
@@ -29,7 +49,6 @@ connectDB(mongoURI);
 
 // createMessage()
 // createMessageInAChat("65fc65f991b710bda8f559e1",50);
-
 
 app.use(cors());
 app.use(express.json());
@@ -52,11 +71,65 @@ app.get("/", (req, res) => {
   );
 });
 
+io.use((socket,next)=>{
+  
+})
+
+io.on("connection", (socket) => {
+  console.log("connected socket server with", socket.id);
+  const user = {
+    _id: "dfdddddfdf",
+    name: "subho",
+  };
+
+  userSocketIds.set(user._id.toString(), socket.id);
+
+  console.log(userSocketIds);
+
+  socket.on(NEW_Message, async ({ chatId, members, message }) => {
+    const messageForRealTime = {
+      content: message,
+      _id: uuid(),
+      sender: {
+        _id: user._id,
+        name: user.name,
+      },
+      chat: chatId,
+      createdAt: new Date().toISOString(),
+    };
+
+    const messageForDb = {
+      content: message,
+      sender: user._id,
+      chat: chatId,
+    };
+    const membersSockets = getSockets(members);
+    io.to(membersSockets).emit(NEW_Message, {
+      chatId,
+      message: messageForRealTime,
+    });
+    // console.log("new message", messageForRealTime);
+    io.to(membersSockets).emit(NEW_MESSAGE_ALERT, { chatId });
+    try {
+      await Message.create(messageForDb);
+    } catch (error) {
+      console.log(error);
+    }
+  });
+
+  socket.on("disconnect", () => {
+    console.log("user disconnected");
+    userSocketIds.delete(user._id.toString());
+  });
+});
+
 app.use(errorMiddleware);
-app.listen(port, () => {
+server.listen(port, () => {
   try {
     console.log(`Server is running on port ${port} in ${process.env.NODE_ENV}`);
   } catch (error) {
     console.log(`server Error, ${error}`);
   }
 });
+
+export { userSocketIds, adminSecretKey };
