@@ -16,6 +16,7 @@ dotenv.config({
 });
 const mongoURI = process.env.MONGO_URI;
 const port = process.env.PORT || 3000;
+export const adminSecretKey = process.env.ADMIN_SECRET_KEY || "123abc96558";
 console.log(mongoURI);
 const app = express();
 
@@ -27,7 +28,7 @@ connectDB(mongoURI);
 // createGroupChat(10)
 
 // createMessage()
-// createMessageInAChat("65fbcd46232c723364c45b62",50);
+// createMessageInAChat("65fc65f991b710bda8f559e1",50);
 
 
 app.use(cors());
