@@ -55,7 +55,7 @@ app.get("/", (req, res) => {
 app.use(errorMiddleware);
 app.listen(port, () => {
   try {
-    console.log(`Server is running on port ${port}`);
+    console.log(`Server is running on port ${port} in ${process.env.NODE_ENV}`);
   } catch (error) {
     console.log(`server Error, ${error}`);
   }
