@@ -62,9 +62,14 @@ const Login = () => {
   return (
     <div
       style={{
-        background: "rgb(2, 0, 36)",
-        backgroundImage:
-          "linear-gradient(0deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 24%, rgba(0,212,255,1) 100%)",
+        background:
+          "url(https://images.unsplash.com/photo-1526402978125-f1d6df91cbac?q=80&w=1986&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)",
+        backgroundSize: "cover",
+        // background: "rgb(2, 0, 36)",
+        // backgroundImage:
+        //    "linear-gradient(0deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 24%, rgba(0,212,255,1) 100%)"
+        // ,
+        // background-image: url('img_girl.jpg')
       }}
     >
       <Container
@@ -74,7 +79,6 @@ const Login = () => {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-      
         }}
       >
         <div
@@ -83,7 +87,7 @@ const Login = () => {
             border: "2px solid gray",
             padding: "10px",
             borderRadius: "10px",
-            background:"lightgray"
+            background: "rgba(255, 255, 255, 0.5)",
           }}
         >
           {isLogin ? (
@@ -245,6 +249,7 @@ const Login = () => {
                   variant="text"
                   color="primary"
                   onClick={toggleLogin}
+                  fontWidth="40px"
                 >
                   Already have an account,Login...
                 </Button>

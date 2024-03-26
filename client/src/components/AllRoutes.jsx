@@ -1,8 +1,8 @@
-import React, { Suspense, lazy } from "react";
+import React, { Suspense, lazy, useEffect } from "react";
 import { Route, Routes } from "react-router-dom";
 import ProtectRoute from "./auth/ProtectRoute";
 import { LayoutLoader } from "./Layout/Loaders";
-
+import axios from "axios";
 // import { Home } from '../pages/Home'
 // using dynamic routes with React.lazy because we dont want to load the whole app at once once the page is visited only then it should load.
 
@@ -20,13 +20,33 @@ const MessageManagement = lazy(() =>
 );
 const UserManagement = lazy(() => import("../pages/admin/UserManagement"));
 import { BrowserRouter } from "react-router-dom";
+import { server } from "../constants/config";
+import { useDispatch, useSelector } from "react-redux";
+import { userExists, userNotExists } from "../redux/reducers/auth";
 
 export const AllRoutes = () => {
+  const dispatch = useDispatch();
+  const {user}=useSelector(state=>state.auth);
+
+
+  useEffect(() => {
+    console.log(server);
+    axios
+      .get(`${server}/api/v1/user/me`)
+      .then((res) => {
+        console.log(res);
+        // dispatch(userExists)
+      })
+      .catch((er) => {
+        console.log(er);
+        dispatch(userNotExists());
+      });
+  }, []);
   return (
     <BrowserRouter>
       <Suspense fallback={<LayoutLoader></LayoutLoader>}>
         <Routes>
-          <Route element={<ProtectRoute user={true}></ProtectRoute>}>
+          <Route element={<ProtectRoute user={user}></ProtectRoute>}>
             {" "}
             <Route path="/" element={<Home />} />
             <Route path="/groups" element={<Groups />} />

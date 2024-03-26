@@ -32,4 +32,12 @@ const getLast7Days = () => {
   return last7Days;
 };
 
-export { fileFormat, transFormImage, getLast7Days };
+const getOrSaveFromStorage = ({ key, value, get }) => {
+  if (get)
+    return localStorage.getItem(key)
+      ? JSON.parse(localStorage.getItem(key))
+      : null;
+  else localStorage.setItem(key, JSON.stringify(value));
+};
+
+export { fileFormat, transFormImage, getLast7Days, getOrSaveFromStorage };

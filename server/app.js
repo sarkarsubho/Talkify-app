@@ -53,27 +53,34 @@ connectDB(mongoURI);
 app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
+app.use(
+  cors({
+    origin: [
+      "http://localhost:5173/",
+      "http://localhost:4173/",
+      process.env.CLIENT_URL,
+    ], 
+    credentials: true,
+  })
+);
 
 // use it if using form data.
 // app.use(express.urlencoded());
 
 // main routes
-app.use("/user", userRoute);
-app.use("/chat", chatRoute);
-
+app.use("/api/v1/user", userRoute);
+app.use("/api/v1/chat", chatRoute);
 // admin routes
-app.use("/admin", adminRoute);
+app.use("/api/v1/admin", adminRoute);
 
 // default route / home route
-app.get("/", (req, res) => {
+app.get("/api/v1/", (req, res) => {
   res.send(
     `<h1 style="color:green; text-align:center">Welcome to Talkify App...</h1>`
   );
 });
 
-io.use((socket,next)=>{
-  
-})
+io.use((socket, next) => {});
 
 io.on("connection", (socket) => {
   console.log("connected socket server with", socket.id);
