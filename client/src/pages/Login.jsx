@@ -11,7 +11,11 @@ import {
   InputAdornment,
 } from "@mui/material";
 
-import { CameraAlt as CameraAltIcon, Visibility, VisibilityOff } from "@mui/icons-material";
+import {
+  CameraAlt as CameraAltIcon,
+  Visibility,
+  VisibilityOff,
+} from "@mui/icons-material";
 import { VisuallyHiddenInput } from "../components/styles/StyledComponents";
 import { backgroundGradient } from "../constants/color";
 import axios from "axios";
@@ -33,9 +37,6 @@ const Login = () => {
 
   const dispatch = useDispatch();
 
-
-
-
   // file handler
   function reader(file, callback) {
     const fr = new FileReader();
@@ -49,15 +50,14 @@ const Login = () => {
     if (!evt.target.files) {
       return;
     }
-    let file=evt.target.files[0];
+    let file = evt.target.files[0];
 
     reader(evt.target.files[0], (err, res) => {
       console.log(res); // Base64 `data:image/...` String result.
       setDp(res);
     });
 
-   setAvatar(file)
-
+    setAvatar(file);
   };
 
   // document.querySelector("#image").addEventListener("change", (evt) => {
@@ -89,6 +89,7 @@ const Login = () => {
         },
         config
       );
+
       dispatch(userExists(true));
       toast.success(data.message);
     } catch (error) {
@@ -98,7 +99,7 @@ const Login = () => {
   };
   const handleSignUp = async (e) => {
     e.preventDefault();
-const toastId= toast.loading("Signing Up...")
+    const toastId = toast.loading("Signing Up...");
     const formData = new FormData();
 
     formData.append("name", name);
@@ -122,7 +123,7 @@ const toastId= toast.loading("Signing Up...")
         config
       );
       dispatch(userExists(data.user));
-      toast.success(data.message,{
+      toast.success(data.message, {
         id: toastId,
       });
     } catch (error) {
@@ -314,7 +315,7 @@ const toastId= toast.loading("Signing Up...")
                   fullWidth
                   name="password"
                   label="Password"
-                  type={showPassword ? 'text' : 'password'}
+                  type={showPassword ? "text" : "password"}
                   id="password"
                   autoComplete="current-password"
                   value={password}
