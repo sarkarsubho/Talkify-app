@@ -8,19 +8,33 @@ import {
   Stack,
   Avatar,
   IconButton,
+  InputAdornment,
 } from "@mui/material";
 
-import { CameraAlt as CameraAltIcon } from "@mui/icons-material";
+import { CameraAlt as CameraAltIcon, Visibility, VisibilityOff } from "@mui/icons-material";
 import { VisuallyHiddenInput } from "../components/styles/StyledComponents";
+import { backgroundGradient } from "../constants/color";
+import axios from "axios";
+import { server } from "../constants/config";
+import { useDispatch } from "react-redux";
+import { userExists } from "../redux/reducers/auth";
+import toast from "react-hot-toast";
 
 const Login = () => {
   const [isLogin, setIsLogin] = useState(true);
-  const [email, setEmail] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [bio, setBio] = useState("");
+  const [username, setUsername] = useState("");
   const [dp, setDp] = useState("");
+  const [avatar, setAvatar] = useState("");
   // can add validations
+
+  const dispatch = useDispatch();
+
+
+
 
   // file handler
   function reader(file, callback) {
@@ -35,10 +49,15 @@ const Login = () => {
     if (!evt.target.files) {
       return;
     }
+    let file=evt.target.files[0];
+
     reader(evt.target.files[0], (err, res) => {
       console.log(res); // Base64 `data:image/...` String result.
       setDp(res);
     });
+
+   setAvatar(file)
+
   };
 
   // document.querySelector("#image").addEventListener("change", (evt) => {
@@ -46,17 +65,70 @@ const Login = () => {
   // });
 
   // file handler
-
-  const toggleLogin = () => setIsLogin(!isLogin);
-  const handleLogin = (e) => {
-    e.preventDefault();
-    // Handle login logic here
-    console.log("Email:", email, "Password:", password);
+  const handleTogglePasswordVisibility = () => {
+    setShowPassword((prevShowPassword) => !prevShowPassword);
   };
-  const handleSignUp = (e) => {
+  const toggleLogin = () => setIsLogin(!isLogin);
+  const handleLogin = async (e) => {
     e.preventDefault();
     // Handle login logic here
-    console.log("Email:", email, "Password:", password);
+    const config = {
+      withCredentials: true,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
+    console.log("Email:", username, "Password:", password);
+    try {
+      const { data } = await axios.post(
+        `${server}/api/v1/user/login`,
+        {
+          username,
+          password,
+        },
+        config
+      );
+      dispatch(userExists(true));
+      toast.success(data.message);
+    } catch (error) {
+      console.log(error);
+      toast.error(error?.response?.data?.message || "Something went wrong...");
+    }
+  };
+  const handleSignUp = async (e) => {
+    e.preventDefault();
+const toastId= toast.loading("Signing Up...")
+    const formData = new FormData();
+
+    formData.append("name", name);
+    formData.append("username", username);
+    formData.append("bio", bio);
+    formData.append("password", password);
+    formData.append("avatar", avatar);
+
+    console.log(formData, { name, username, bio, password, dp });
+    const config = {
+      withCredentials: true,
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    };
+
+    try {
+      const { data } = await axios.post(
+        `${server}/api/v1/user/new`,
+        formData,
+        config
+      );
+      dispatch(userExists(data.user));
+      toast.success(data.message,{
+        id: toastId,
+      });
+    } catch (error) {
+      toast.error(error?.response?.data?.message || "Something went wrong...");
+      // console.log();
+    }
   };
 
   return (
@@ -65,11 +137,6 @@ const Login = () => {
         background:
           "url(https://images.unsplash.com/photo-1526402978125-f1d6df91cbac?q=80&w=1986&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)",
         backgroundSize: "cover",
-        // background: "rgb(2, 0, 36)",
-        // backgroundImage:
-        //    "linear-gradient(0deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 24%, rgba(0,212,255,1) 100%)"
-        // ,
-        // background-image: url('img_girl.jpg')
       }}
     >
       <Container
@@ -77,10 +144,25 @@ const Login = () => {
         sx={{
           height: "100vh",
           display: "flex",
+          flexDirection: "column",
           justifyContent: "center",
           alignItems: "center",
         }}
       >
+        <Typography
+          component="h1"
+          fontSize={"2rem"}
+          textAlign={"center"}
+          fontWeight={"600"}
+          color={"teal"}
+          mb={"3rem"}
+          fontFamily={"curshiv"}
+          style={{
+            fontFamily: "cursive",
+          }}
+        >
+          Get Started with Talkify...
+        </Typography>
         <div
           style={{
             maxWidth: "400px",
@@ -102,12 +184,12 @@ const Login = () => {
                   required
                   fullWidth
                   id="email"
-                  label="Email Address"
+                  label="User Name"
                   name="email"
                   autoComplete="email"
                   autoFocus
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
                 />
                 <TextField
                   variant="outlined"
@@ -145,7 +227,14 @@ const Login = () => {
             </>
           ) : (
             <>
-              <Typography component="h1" variant="h5" textAlign={"center"}>
+              <Typography
+                component="h1"
+                variant="h5"
+                textAlign={"center"}
+                mb={"1rem"}
+                fontWeight={"600"}
+                borderBottom={"1px solid lightgray"}
+              >
                 Sign UP
               </Typography>
               <Stack position={"relative"} width={"8rem"} margin={"auto"}>
@@ -187,12 +276,12 @@ const Login = () => {
                   required
                   fullWidth
                   id="email"
-                  label="Email Address"
-                  name="email"
+                  label="Name"
+                  name="name"
                   autoComplete="email"
                   autoFocus
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
                 />
                 <TextField
                   variant="outlined"
@@ -202,10 +291,9 @@ const Login = () => {
                   id="name"
                   label="Username"
                   name="username"
-                  autoComplete="name"
-                  autoFocus
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  autoComplete="username"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
                 />
                 <TextField
                   variant="outlined"
@@ -216,9 +304,8 @@ const Login = () => {
                   label="Bio"
                   name="bio"
                   autoComplete="bio"
-                  autoFocus
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  value={bio}
+                  onChange={(e) => setBio(e.target.value)}
                 />
                 <TextField
                   variant="outlined"
@@ -227,11 +314,24 @@ const Login = () => {
                   fullWidth
                   name="password"
                   label="Password"
-                  type="password"
+                  type={showPassword ? 'text' : 'password'}
                   id="password"
                   autoComplete="current-password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label="toggle password visibility"
+                          onClick={handleTogglePasswordVisibility}
+                          edge="end"
+                        >
+                          {showPassword ? <VisibilityOff /> : <Visibility />}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
                 />
                 <Button
                   type="submit"
@@ -249,7 +349,7 @@ const Login = () => {
                   variant="text"
                   color="primary"
                   onClick={toggleLogin}
-                  fontWidth="40px"
+                  // fontWidth="40px"
                 >
                   Already have an account,Login...
                 </Button>

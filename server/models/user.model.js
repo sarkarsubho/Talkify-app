@@ -15,10 +15,9 @@ const userSchema = new Schema(
   { timestamps: true, versionKey: false }
 );
 
-
-userSchema.pre("save", async function (cb) {
+userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) {
-    cb();
+    return next();
   }
   this.password = await hash(this.password, 10);
 });

@@ -3,6 +3,8 @@ import { Route, Routes } from "react-router-dom";
 import ProtectRoute from "./auth/ProtectRoute";
 import { LayoutLoader } from "./Layout/Loaders";
 import axios from "axios";
+import { Toaster } from "react-hot-toast";
+
 // import { Home } from '../pages/Home'
 // using dynamic routes with React.lazy because we dont want to load the whole app at once once the page is visited only then it should load.
 
@@ -26,23 +28,26 @@ import { userExists, userNotExists } from "../redux/reducers/auth";
 
 export const AllRoutes = () => {
   const dispatch = useDispatch();
-  const {user}=useSelector(state=>state.auth);
-
+  const { user, loader } = useSelector((state) => state.auth);
+  console.log(user);
 
   useEffect(() => {
     console.log(server);
     axios
-      .get(`${server}/api/v1/user/me`)
-      .then((res) => {
-        console.log(res);
-        // dispatch(userExists)
+      .get(`${server}/api/v1/user/me`, { withCredentials: true })
+      .then(({ data }) => {
+        console.log("user", data);
+        dispatch(userExists(data.user));
+        
       })
       .catch((er) => {
         console.log(er);
         dispatch(userNotExists());
       });
   }, []);
-  return (
+  return loader ? (
+    <LayoutLoader />
+  ) : (
     <BrowserRouter>
       <Suspense fallback={<LayoutLoader></LayoutLoader>}>
         <Routes>
@@ -50,13 +55,13 @@ export const AllRoutes = () => {
             {" "}
             <Route path="/" element={<Home />} />
             <Route path="/groups" element={<Groups />} />
+            <Route path="/chat/:chatId" element={<Chat />} />
           </Route>
-          <Route path="/chat/:chatId" element={<Chat />} />
           {/* if already loged in should not able to visit login again  */}
           <Route
             path="/login"
             element={
-              <ProtectRoute user={true} redirect="/">
+              <ProtectRoute user={!user} redirect="/">
                 <Login></Login>
               </ProtectRoute>
             }
@@ -70,6 +75,7 @@ export const AllRoutes = () => {
           <Route path="*" element={<NotFoundPage></NotFoundPage>}></Route>
         </Routes>
       </Suspense>
+      <Toaster position="bottom-center"></Toaster>
     </BrowserRouter>
   );
 };

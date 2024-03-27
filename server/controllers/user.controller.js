@@ -1,6 +1,11 @@
 import { compare } from "bcrypt";
 import { User } from "../models/user.model.js";
-import { cookieOptions, emitEvent, sendToken } from "../utils/features.js";
+import {
+  cookieOptions,
+  emitEvent,
+  sendToken,
+  uploadFilesToCloudinary,
+} from "../utils/features.js";
 import { tryCatch } from "../middlewares/error.js";
 import { ErrorHandler } from "../utils/utility.js";
 import { Chat } from "../models/chat.model.js";
@@ -10,18 +15,22 @@ import { getOtherMember } from "../lib/helper.js";
 
 // create a new user and save the token in cookie
 const newUser = tryCatch(async (req, res, next) => {
-  const { name, username, bio, password, avatar } = req.body;
+  const { name, username, bio, password } = req.body;
   const file = req.file;
-  // console.log(file);
-  // let avatar = {
-  //   public_id: "dfdfdf",
-  //   url: "kj",
-  // };
+  // const file = req.body.avatar;
+
+  // console.log("file,", file,req.body);
 
   if (!file) {
     return next(new ErrorHandler("Please upload Avatar.", 400));
   }
 
+  const result = await uploadFilesToCloudinary([file]);
+
+  let avatar = {
+    public_id: result[0].public_id,
+    url: result[0].url,
+  };
   let user = await User.create({ name, username, bio, password, avatar });
   sendToken(res, user, 201, "user created successfully!");
 });

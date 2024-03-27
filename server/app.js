@@ -3,7 +3,7 @@ import cors from "cors";
 import userRoute from "./routes/user.routes.js";
 import chatRoute from "./routes/chat.routes.js";
 import adminRoute from "./routes/admin.routes.js";
-
+import {v2 as cloudinary} from "cloudinary";
 import { connectDB } from "./utils/features.js";
 import dotenv from "dotenv";
 import { errorMiddleware } from "./middlewares/error.js";
@@ -41,6 +41,11 @@ const server = createServer(app);
 const io = new Server(server, {});
 
 connectDB(mongoURI);
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key:process.env.CLOUDINARY_API_KEY,
+  api_secret:process.env.CLOUDINARY_API_SECRET
+})
 
 // creating fake user for test
 // createUser(10);
@@ -50,16 +55,16 @@ connectDB(mongoURI);
 // createMessage()
 // createMessageInAChat("65fc65f991b710bda8f559e1",50);
 
-app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
 app.use(
   cors({
     origin: [
-      "http://localhost:5173/",
-      "http://localhost:4173/",
+      "http://localhost:5173",
+      "http://localhost:4173",
       process.env.CLIENT_URL,
-    ], 
+    ],
+    methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
 );
