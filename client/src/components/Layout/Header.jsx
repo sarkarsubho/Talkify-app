@@ -23,6 +23,7 @@ import { server } from "../../constants/config";
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { userNotExists } from "../../redux/reducers/auth";
+import { setIsMobile } from "../../redux/reducers/misc";
 
 const SearchDialog = React.lazy(() => import("../specific/Search"));
 const NotificationsDialog = React.lazy(() =>
@@ -40,6 +41,7 @@ const Header = () => {
 
   function handleMobile() {
     console.log(" mobile");
+   dispatch(setIsMobile(true)) ;
   }
   const openSearchDialog = () => {
     console.log(" openNewDialog");

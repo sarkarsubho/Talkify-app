@@ -20,6 +20,7 @@ const ChatList = ({
       margin={0}
       sx={{
         backgroundImage: backgroundGradient,
+        
       }}
     >
       {chats?.map((e, i) => {
