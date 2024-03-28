@@ -1,5 +1,5 @@
 import { Drawer, Grid, Skeleton } from "@mui/material";
-import React from "react";
+import React, { useEffect } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import { sampleChats } from "../../constants/sampleData";
 import Title from "../shared/Title";
@@ -9,6 +9,7 @@ import Header from "./Header";
 import { useMyChatsQuery } from "../../redux/api/api";
 import { useDispatch, useSelector } from "react-redux";
 import { setIsMobile } from "../../redux/reducers/misc";
+import { useErrors } from "../../hooks/hook";
 
 const AppLayout = () => (WrappedComponent) => {
   return (props) => {
@@ -16,6 +17,7 @@ const AppLayout = () => (WrappedComponent) => {
     const chatId = params.id;
     const dispatch = useDispatch();
     const { isMobile } = useSelector((state) => state.misc);
+    const { user } = useSelector((state) => state.auth);
 
     const { isLoading, data, isError, error, refetch } = useMyChatsQuery("");
 
@@ -30,6 +32,8 @@ const AppLayout = () => (WrappedComponent) => {
     const handleMobileClose = () => {
       dispatch(setIsMobile(false));
     };
+
+    useErrors([{ isError, error }]);
 
     return (
       <div>
@@ -91,7 +95,7 @@ const AppLayout = () => (WrappedComponent) => {
             alignItems={"center"}
             width={"100%"}
           >
-            <Profile />
+            <Profile user={user} />
           </Grid>
         </Grid>
       </div>

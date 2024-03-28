@@ -9,6 +9,7 @@ import {
   Typography,
 } from "@mui/material";
 import React, { memo } from "react";
+import { transFormImage } from "../../lib/features";
 
 const UserItems = ({
   user,
@@ -26,7 +27,7 @@ const UserItems = ({
         width={"100%"}
         {...styling}
       >
-        <Avatar></Avatar>
+        <Avatar src={transFormImage(user.avatar)}></Avatar>
         <Typography
           variant="body1"
           sx={{
@@ -38,7 +39,7 @@ const UserItems = ({
             textOverflow: "ellipsis",
           }}
         >
-          name
+          {user.name}
         </Typography>
         <IconButton
           size="small"
@@ -50,7 +51,7 @@ const UserItems = ({
             },
           }}
           // give here actual _id
-          onClick={() => handler(user)}
+          onClick={() => handler(user._id)}
           disabled={handlerIsLoading}
         >
           {isAdded ? <RemoveIcon></RemoveIcon> : <AddIcon></AddIcon>}
