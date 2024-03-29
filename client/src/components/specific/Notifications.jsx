@@ -5,15 +5,30 @@ import {
   DialogTitle,
   ListItem,
   Stack,
-  Typography
+  Typography,
 } from "@mui/material";
 import React, { memo } from "react";
 import { sampleNotifications } from "../../constants/sampleData";
+import { useGetNotificationsQuery } from "../../redux/api/api";
+import { useErrors } from "../../hooks/hook";
+import { useDispatch, useSelector } from "react-redux";
+import { setIsNotification } from "../../redux/reducers/misc";
 
 const Notifications = () => {
+  const { isLoading, data, error, isError } = useGetNotificationsQuery();
+  const { isNotification } = useSelector((state) => state.misc);
+ const dispatch=useDispatch();
+
   const friendRequestHandler = ({ _id, accept }) => {};
+  console.log(data);
+
+  const notificationCloseHandler = () => {
+   dispatch(setIsNotification(false)) ;
+  };
+  useErrors([{ error, isError }]);
+  console.log(isNotification);
   return (
-    <Dialog open={false}>
+    <Dialog open={isNotification} onClose={notificationCloseHandler}>
       <Stack p={{ xs: "1rem", sm: "2rem" }} maxWidth={"25rem"}>
         <DialogTitle>Notifications</DialogTitle>
         {sampleNotifications.length > 0 ? (
@@ -58,12 +73,9 @@ const NotificationItem = memo(({ sender, _id, handler }) => {
         >
           {`${name} send you a friend request.`}
         </Typography>
-        <Stack direction={"row"} sx={{
-          
-        }}>
+        <Stack direction={"row"} sx={{}}>
           <Button
-          color="success"
-          
+            color="success"
             onClick={() => {
               handler({ _id, accept: true });
             }}
@@ -71,7 +83,7 @@ const NotificationItem = memo(({ sender, _id, handler }) => {
             Accept
           </Button>
           <Button
-          color="error"
+            color="error"
             onClick={() => {
               handler({ _id, accept: false });
             }}

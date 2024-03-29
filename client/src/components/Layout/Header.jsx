@@ -23,7 +23,12 @@ import { server } from "../../constants/config";
 import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { userNotExists } from "../../redux/reducers/auth";
-import { setIsMobile, setIsSearch } from "../../redux/reducers/misc";
+import {
+  setIsMobile,
+  setIsNewGroup,
+  setIsNotification,
+  setIsSearch,
+} from "../../redux/reducers/misc";
 
 const SearchDialog = React.lazy(() => import("../specific/Search"));
 const NotificationsDialog = React.lazy(() =>
@@ -36,7 +41,7 @@ const NewGroupDialog = React.lazy(() => import("../specific/NewGroup"));
 const Header = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { isSearch } = useSelector((state) => state.misc);
+  const { isSearch,isNotification ,isNewGroup} = useSelector((state) => state.misc);
 
   function handleMobile() {
     console.log(" mobile");
@@ -48,9 +53,11 @@ const Header = () => {
   };
   const openNewGroup = () => {
     console.log(" openNewGroup");
+    dispatch(setIsNewGroup(true))
   };
   const openNotifications = () => {
     console.log(" openNotifications");
+    dispatch(setIsNotification(true));
   };
   const navigateToGroup = () => {
     console.log(" navigateToGroup");
@@ -140,7 +147,7 @@ const Header = () => {
         </Suspense>
       )}
       {/* notification */}
-      {isSearch && (
+      {isNotification && (
         <Suspense fallback={<Backdrop open></Backdrop>}>
           <NotificationsDialog></NotificationsDialog>
         </Suspense>
