@@ -25,6 +25,7 @@ import { BrowserRouter } from "react-router-dom";
 import { server } from "../constants/config";
 import { useDispatch, useSelector } from "react-redux";
 import { userExists, userNotExists } from "../redux/reducers/auth";
+import { SocketProvider } from "../socket";
 
 export const AllRoutes = () => {
   const dispatch = useDispatch();
@@ -38,7 +39,6 @@ export const AllRoutes = () => {
       .then(({ data }) => {
         console.log("user", data);
         dispatch(userExists(data.user));
-        
       })
       .catch((er) => {
         console.log(er);
@@ -51,7 +51,14 @@ export const AllRoutes = () => {
     <BrowserRouter>
       <Suspense fallback={<LayoutLoader></LayoutLoader>}>
         <Routes>
-          <Route element={<ProtectRoute user={user}></ProtectRoute>}>
+          <Route
+          // as only want socket on the below components. covered with Socket Provider
+            element={
+              <SocketProvider>
+                <ProtectRoute user={user}/>
+              </SocketProvider>
+            }
+          >
             {" "}
             <Route path="/" element={<Home />} />
             <Route path="/groups" element={<Groups />} />

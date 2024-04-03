@@ -23,6 +23,8 @@ import { v4 as uuid } from "uuid";
 import { NEW_MESSAGE_ALERT, NEW_Message } from "./constants/events.js";
 import { getSockets } from "./lib/helper.js";
 import { Message } from "./models/message.model.js";
+import { corsOption } from "./constants/config.js";
+import { socketAuthenticator } from "./middlewares/auth.js";
 
 dotenv.config({
   path: "./.env",
@@ -38,7 +40,9 @@ const userSocketIds = new Map();
 
 const app = express();
 const server = createServer(app);
-const io = new Server(server, {});
+const io = new Server(server, {
+  cors: corsOption,
+});
 
 connectDB(mongoURI);
 cloudinary.config({
@@ -57,17 +61,7 @@ cloudinary.config({
 
 app.use(express.json());
 app.use(cookieParser());
-app.use(
-  cors({
-    origin: [
-      "http://localhost:5173",
-      "http://localhost:4173",
-      process.env.CLIENT_URL,
-    ],
-    methods: ["GET", "POST","PATCH", "PUT", "DELETE"],
-    credentials: true,
-  })
-);
+app.use(cors(corsOption));
 
 // use it if using form data.
 // app.use(express.urlencoded());
@@ -85,7 +79,13 @@ app.get("/api/v1/", (req, res) => {
   );
 });
 
-io.use((socket, next) => {});
+io.use((socket, next) => {
+  cookieParser()(
+    socket.request,
+    socket.request.res,
+    async (err) => await socketAuthenticator(err, socket, next)
+  );
+});
 
 io.on("connection", (socket) => {
   console.log("connected socket server with", socket.id);

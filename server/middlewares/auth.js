@@ -1,11 +1,12 @@
 import { adminSecretKey } from "../app.js";
+import { Talkify_token } from "../constants/config.js";
 import { ErrorHandler } from "../utils/utility.js";
 import { tryCatch } from "./error.js";
 import jwt from "jsonwebtoken";
 
 const isAuth = tryCatch(async (req, res, next) => {
   //   console.log(req.cookies["Talkify-token"]);
-  const token = req.cookies["Talkify-token"];
+  const token = req.cookies[Talkify_token];
 
   if (!token)
     return next(
@@ -46,4 +47,15 @@ const isAdmin = tryCatch(async (req, res, next) => {
   next();
 });
 
-export { isAuth, isAdmin };
+const socketAuthenticator = async (err, socket, next) => {
+  try {
+    if (err) return next(err);
+
+    const authToken = socket.request.cookies[Talkify_token];
+  } catch (error) {
+    console.log(error);
+    return next(new ErrorHandler("Please login to acess this route", 401));
+  }
+};
+
+export { isAuth, isAdmin, socketAuthenticator };
