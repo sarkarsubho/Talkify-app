@@ -10,4 +10,6 @@ const chatSchema = new Schema(
   { timestamps: true, versionKey: false }
 );
 
+
+
 export const Chat = mongoose.models.Chat || model("Chat", chatSchema);

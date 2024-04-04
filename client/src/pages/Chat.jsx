@@ -2,24 +2,67 @@ import {
   AttachFile as AttachFileIcon,
   Send as SendIcon,
 } from "@mui/icons-material";
-import { IconButton, Stack } from "@mui/material";
-import React, { useRef } from "react";
+import { IconButton, Skeleton, Stack } from "@mui/material";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import AppLayout from "../components/Layout/AppLayout";
 import { FileMenu } from "../components/dialogs/FileMenu";
 import MessageComponent from "../components/shared/MessageComponent";
 import { InputBox } from "../components/styles/StyledComponents";
 import { grayColor } from "../constants/color";
 import { sampleMessage } from "../constants/sampleData";
+import { getSocket } from "../socket";
+import { NEW_Message } from "../constants/events";
+import { useChatDetailsQuery } from "../redux/api/api";
+import { useSocketEvents } from "../hooks/hook";
 
 const user = {
   _id: "hfksdanfsadkl",
   name: "subhankar sarkar",
 };
 
-const Chat = () => {
+const Chat = ({ chatId }) => {
   const containerRef = useRef(null);
+  const socket = getSocket();
+  const chatDetails = useChatDetailsQuery({ chatId, skip: !chatId });
 
-  return (
+  // console.log(chatDetails.data.chat.members);
+
+  const [message, setMessage] = useState("");
+  const [messages, setMessages] = useState([]);
+  console.log(messages);
+  const members = chatDetails?.data?.chat?.members;
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log(message);
+    if (!message.trim()) return;
+
+    // emiting message to the server
+    socket.emit(NEW_Message, { chatId, members, message });
+    setMessage("");
+  };
+
+  // this function should not create every time thats why using useCallback. for event handlers
+
+  const newMessagesHandler = useCallback((data) => {
+    console.log(data);
+
+    setMessages((prev) => [...prev, data.message]);
+  });
+
+  const eventHandlers = { [NEW_Message]: newMessagesHandler };
+  useSocketEvents(socket, eventHandlers);
+  // useEffect(() => {
+  //   socket.on(NEW_Message, newMessagesHandler);
+
+  //   return () => {
+  //     socket.off(NEW_Message, newMessagesHandler);
+  //   };
+  // }, []);
+
+  return chatDetails.isLoading ? (
+    <Skeleton />
+  ) : (
     <>
       <Stack
         ref={containerRef}
@@ -33,9 +76,13 @@ const Chat = () => {
           overflowY: "auto",
         }}
       >
-        {sampleMessage.map((message, index) => {
+        {messages.map((message, index) => {
           return (
-            <MessageComponent key={index} message={message} user={user}></MessageComponent>
+            <MessageComponent
+              key={index}
+              message={message}
+              user={user}
+            ></MessageComponent>
           );
         })}
       </Stack>
@@ -43,6 +90,7 @@ const Chat = () => {
         style={{
           height: "7%",
         }}
+        onSubmit={handleSubmit}
       >
         <Stack
           direction={"row"}
@@ -61,7 +109,11 @@ const Chat = () => {
             <AttachFileIcon></AttachFileIcon>
           </IconButton>
 
-          <InputBox placeholder="Type Message here..."></InputBox>
+          <InputBox
+            placeholder="Type Message here..."
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+          ></InputBox>
           <IconButton
             type="submit"
             sx={{

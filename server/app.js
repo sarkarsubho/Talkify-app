@@ -79,6 +79,7 @@ app.get("/api/v1/", (req, res) => {
   );
 });
 
+//  socket authentication middleware
 io.use((socket, next) => {
   cookieParser()(
     socket.request,
@@ -87,16 +88,16 @@ io.use((socket, next) => {
   );
 });
 
+// socket started here
 io.on("connection", (socket) => {
-  console.log("connected socket server with", socket.id);
-  const user = {
-    _id: "dfdddddfdf",
-    name: "subho",
-  };
 
+
+  console.log("connected socket server with", socket.id);
+  const user = socket.user;
+  //  console.log((user));
   userSocketIds.set(user._id.toString(), socket.id);
 
-  console.log(userSocketIds);
+  // console.log(userSocketIds);
 
   socket.on(NEW_Message, async ({ chatId, members, message }) => {
     const messageForRealTime = {
@@ -109,6 +110,7 @@ io.on("connection", (socket) => {
       chat: chatId,
       createdAt: new Date().toISOString(),
     };
+    console.log("Emiting Messsage for real time", members);
 
     const messageForDb = {
       content: message,

@@ -60,5 +60,4 @@ const useSocketEvents = (socket, handlers) => {
   }, [socket, handlers]);
 };
 
-
 export { useErrors, useAsyncMutation, useSocketEvents };
