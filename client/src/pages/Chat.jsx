@@ -15,12 +15,12 @@ import { NEW_Message } from "../constants/events";
 import { useChatDetailsQuery } from "../redux/api/api";
 import { useSocketEvents } from "../hooks/hook";
 
-const user = {
-  _id: "hfksdanfsadkl",
-  name: "subhankar sarkar",
-};
+// const user = {
+//   _id: "hfksdanfsadkl",
+//   name: "subhankar sarkar",
+// };
 
-const Chat = ({ chatId }) => {
+const Chat = ({ chatId, user }) => {
   const containerRef = useRef(null);
   const socket = getSocket();
   const chatDetails = useChatDetailsQuery({ chatId, skip: !chatId });
@@ -29,8 +29,9 @@ const Chat = ({ chatId }) => {
 
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
-  console.log(messages);
+  // console.log(messages);
   const members = chatDetails?.data?.chat?.members;
+  const errors = [{isError:chatDetails.error}];
 
   const handleSubmit = (e) => {
     e.preventDefault();
