@@ -12,8 +12,8 @@ import { grayColor } from "../constants/color";
 import { sampleMessage } from "../constants/sampleData";
 import { getSocket } from "../socket";
 import { NEW_Message } from "../constants/events";
-import { useChatDetailsQuery } from "../redux/api/api";
-import { useSocketEvents } from "../hooks/hook";
+import { useChatDetailsQuery, useGetMessagesQuery } from "../redux/api/api";
+import { useErrors, useSocketEvents } from "../hooks/hook";
 
 // const user = {
 //   _id: "hfksdanfsadkl",
@@ -23,15 +23,21 @@ import { useSocketEvents } from "../hooks/hook";
 const Chat = ({ chatId, user }) => {
   const containerRef = useRef(null);
   const socket = getSocket();
-  const chatDetails = useChatDetailsQuery({ chatId, skip: !chatId });
-
-  // console.log(chatDetails.data.chat.members);
 
   const [message, setMessage] = useState("");
+  const [page, setPage] = useState(1);
   const [messages, setMessages] = useState([]);
+
+  const chatDetails = useChatDetailsQuery({ chatId, skip: !chatId });
+  const oldMessagesChunk = useGetMessagesQuery({ chatId, page: 1 });
+
+  // console.log(chatDetails.data.chat.members);
   // console.log(messages);
   const members = chatDetails?.data?.chat?.members;
-  const errors = [{isError:chatDetails.error}];
+
+
+  // store all the errors
+  const errors = [{ isError: chatDetails.isError, error: chatDetails.error }];
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -53,13 +59,8 @@ const Chat = ({ chatId, user }) => {
 
   const eventHandlers = { [NEW_Message]: newMessagesHandler };
   useSocketEvents(socket, eventHandlers);
-  // useEffect(() => {
-  //   socket.on(NEW_Message, newMessagesHandler);
+  useErrors(errors);
 
-  //   return () => {
-  //     socket.off(NEW_Message, newMessagesHandler);
-  //   };
-  // }, []);
 
   return chatDetails.isLoading ? (
     <Skeleton />
