@@ -31,8 +31,8 @@ const Chat = ({ chatId, user }) => {
   const [message, setMessage] = useState("");
   const [page, setPage] = useState(1);
   const [messages, setMessages] = useState([]);
-  const [fileMenuAnchor, setFileMenuAnchor]=useState(null);
-  
+  const [fileMenuAnchor, setFileMenuAnchor] = useState(null);
+
   const chatDetails = useChatDetailsQuery({ chatId, skip: !chatId });
   const oldMessagesChunk = useGetMessagesQuery({ chatId, page: page });
 
@@ -56,7 +56,7 @@ const Chat = ({ chatId, user }) => {
 
   const handleFileOpen = (e) => {
     dispatch(setIsFileMenu(true));
-    setFileMenuAnchor(e.currentTarget)
+    setFileMenuAnchor(e.currentTarget);
   };
 
   const handleSubmit = (e) => {
@@ -93,7 +93,7 @@ const Chat = ({ chatId, user }) => {
         padding={"1rem"}
         spacing={"1rem"}
         bgcolor={grayColor}
-        height={"93%"}
+        height={"90%"}
         sx={{
           overflowX: "hidden",
           overflowY: "auto",
@@ -111,7 +111,7 @@ const Chat = ({ chatId, user }) => {
       </Stack>
       <form
         style={{
-          height: "7%",
+          height: "10%",
         }}
         onSubmit={handleSubmit}
       >
@@ -154,7 +154,7 @@ const Chat = ({ chatId, user }) => {
           </IconButton>
         </Stack>
       </form>
-      <FileMenu anchorE1={fileMenuAnchor}></FileMenu>
+      <FileMenu anchorE1={fileMenuAnchor} chatId={chatId}></FileMenu>
     </>
   );
 };
