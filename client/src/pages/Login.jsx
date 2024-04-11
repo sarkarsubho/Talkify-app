@@ -162,6 +162,34 @@ const Login = () => {
             fontFamily: "cursive",
           }}
         >
+          Thanks for visiting us 🙏. 
+        </Typography>
+        <Typography
+          component="h1"
+          fontSize={"2rem"}
+          textAlign={"center"}
+          fontWeight={"600"}
+          color={"teal"}
+          mb={"3rem"}
+          fontFamily={"curshiv"}
+          style={{
+            fontFamily: "cursive",
+          }}
+        >
+          Coming soon: Our app is getting a makeover! We're working hard behind the scenes to bring you an even better experience. Thank you for your patience and support. Stay tuned for updates!
+        </Typography>
+        <Typography
+          component="h1"
+          fontSize={"2rem"}
+          textAlign={"center"}
+          fontWeight={"600"}
+          color={"teal"}
+          mb={"3rem"}
+          fontFamily={"curshiv"}
+          style={{
+            fontFamily: "cursive",
+          }}
+        >
           Get Started with Talkify...
         </Typography>
         <div

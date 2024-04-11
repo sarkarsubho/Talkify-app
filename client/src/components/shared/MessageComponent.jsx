@@ -35,17 +35,19 @@ const MessageComponent = ({ message, user }) => {
         attachments.map((attachment, i) => {
           const url = attachment.url;
           const file = fileFormat(url);
+
+          console.log("file format", file);
           return (
             <Box key={i}>
               <a
-                href=""
+                href={url}
                 target="_blank"
                 download={true}
                 style={{
                   color: "black",
                 }}
               >
-                {<RendedAttachment file={file} url={url}></RendedAttachment>}
+                {RendedAttachment(file, url)}
               </a>
             </Box>
           );

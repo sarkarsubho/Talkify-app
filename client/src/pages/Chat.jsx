@@ -69,13 +69,22 @@ const Chat = ({ chatId, user }) => {
     setMessage("");
   };
 
+  useEffect(() => {
+    return () => {
+      setMessage("");
+      setMessages([]);
+      setOldMessages([]);
+      setPage(1);
+    };
+  }, [chatId]);
+
   // this function should not create every time thats why using useCallback. for event handlers
 
   const newMessagesHandler = useCallback((data) => {
     console.log(data);
-
+    if (data.chatId !== chatId) return;
     setMessages((prev) => [...prev, data.message]);
-  });
+  }, []);
 
   const eventHandlers = { [NEW_Message]: newMessagesHandler };
   useSocketEvents(socket, eventHandlers);

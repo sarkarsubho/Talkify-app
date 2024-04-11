@@ -44,6 +44,8 @@ const io = new Server(server, {
   cors: corsOption,
 });
 
+app.set("io", io);
+
 connectDB(mongoURI);
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,

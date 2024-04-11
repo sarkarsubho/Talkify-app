@@ -2,6 +2,7 @@ import {
   Alert,
   NEW_ATTACHMENT,
   NEW_MESSAGE_ALERT,
+  NEW_Message,
   REFATCH_CHATS,
 } from "../constants/events.js";
 import { getOtherMember } from "../lib/helper.js";
@@ -9,7 +10,7 @@ import { tryCatch } from "../middlewares/error.js";
 import { Chat } from "../models/chat.model.js";
 import { Message } from "../models/message.model.js";
 import { User } from "../models/user.model.js";
-import { deleteFilesFromCloudinary, emitEvent } from "../utils/features.js";
+import { deleteFilesFromCloudinary, emitEvent, uploadFilesToCloudinary } from "../utils/features.js";
 import { ErrorHandler } from "../utils/utility.js";
 
 const newGroupChat = tryCatch(async (req, res, next) => {
@@ -249,7 +250,7 @@ const sendAttachment = tryCatch(async (req, res, next) => {
   // console.log(chat);
 
   //  upload file here
-  const attachments = [];
+  const attachments = await uploadFilesToCloudinary(files);
 
   const messageForDB = {
     content: "",
@@ -268,7 +269,11 @@ const sendAttachment = tryCatch(async (req, res, next) => {
   };
   const message = await Message.create(messageForDB);
 
-  emitEvent(req, NEW_ATTACHMENT, chat.members, {
+  // emitEvent(req, NEW_ATTACHMENT, chat.members, {
+  //   message: messageForRealTime,
+  //   chatId,
+  // });
+  emitEvent(req, NEW_Message, chat.members, {
     message: messageForRealTime,
     chatId,
   });

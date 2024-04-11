@@ -6,6 +6,7 @@ import {
   Toolbar,
   Tooltip,
   Typography,
+  Badge,
 } from "@mui/material";
 import React, { Suspense, useState } from "react";
 import { orange } from "../../constants/color";
@@ -41,7 +42,10 @@ const NewGroupDialog = React.lazy(() => import("../specific/NewGroup"));
 const Header = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { isSearch,isNotification ,isNewGroup} = useSelector((state) => state.misc);
+  const { isSearch, isNotification, isNewGroup } = useSelector(
+    (state) => state.misc
+  );
+  const { notificationCount } = useSelector((state) => state.chat);
 
   function handleMobile() {
     console.log(" mobile");
@@ -53,7 +57,7 @@ const Header = () => {
   };
   const openNewGroup = () => {
     console.log(" openNewGroup");
-    dispatch(setIsNewGroup(true))
+    dispatch(setIsNewGroup(true));
   };
   const openNotifications = () => {
     console.log(" openNotifications");
@@ -129,6 +133,7 @@ const Header = () => {
                 title="Notifications"
                 icon={<NotificationsIcon />}
                 onClick={openNotifications}
+                value={notificationCount}
               ></IconBtn>
 
               <IconBtn
@@ -162,11 +167,17 @@ const Header = () => {
   );
 };
 
-const IconBtn = ({ title, icon, onClick }) => {
+const IconBtn = ({ title, icon, onClick, value }) => {
   return (
     <Tooltip title={title}>
       <IconButton color="inherit" size="large" onClick={onClick}>
-        {icon}
+        {value ? (
+          <Badge badgeContent={value} color="error">
+            {icon}
+          </Badge>
+        ) : (
+          icon
+        )}
       </IconButton>
     </Tooltip>
   );

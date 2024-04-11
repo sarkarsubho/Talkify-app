@@ -17,7 +17,11 @@ const fileFormat = (url) => {
   return "file";
 };
 
-const transFormImage = (url = "", width = 100) => url;
+const transFormImage = (url = "", width = 100) => {
+  //  dpr_auto/w_${width}/ ==> this is a cloudinary feature that enable us to make the specific size of our content , in side chat message we don't need to bigger images so we can get smaller size of image to perform it quickly load
+  const newUrl = url.replace("upload/", `upload/dpr_auto/w_${width}/`);
+  return newUrl;
+};
 
 const getLast7Days = () => {
   const currentDate = moment();
