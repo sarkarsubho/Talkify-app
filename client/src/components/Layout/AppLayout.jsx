@@ -12,7 +12,11 @@ import { setIsMobile } from "../../redux/reducers/misc";
 import { useErrors, useSocketEvents } from "../../hooks/hook";
 import { getSocket } from "../../socket";
 import { NEW_MESSAGE_ALERT, NEW_REQUEST } from "../../constants/events";
-import { incrementNotification } from "../../redux/reducers/chat";
+import {
+  incrementNotification,
+  setNewMessagesAlert,
+} from "../../redux/reducers/chat";
+import { getOrSaveFromStorage } from "../../lib/features";
 
 const AppLayout = () => (WrappedComponent) => {
   return (props) => {
@@ -21,6 +25,7 @@ const AppLayout = () => (WrappedComponent) => {
     const dispatch = useDispatch();
     const { isMobile } = useSelector((state) => state.misc);
     const { user } = useSelector((state) => state.auth);
+    const { newMessagesAlert } = useSelector((state) => state.chat);
 
     const socket = getSocket();
 
@@ -40,7 +45,14 @@ const AppLayout = () => (WrappedComponent) => {
       dispatch(setIsMobile(false));
     };
 
-    const newMessageAlertHandler = useCallback(() => {}, []);
+    const newMessageAlertHandler = useCallback(
+      (data) => {
+        if (data.chatId === chatId) return;
+        dispatch(setNewMessagesAlert(data));
+        // const sds = data.chatId;
+      },
+      [chatId]
+    );
     const newRequestHandler = useCallback(() => {
       dispatch(incrementNotification());
     }, [dispatch]);
@@ -52,6 +64,9 @@ const AppLayout = () => (WrappedComponent) => {
     useSocketEvents(socket, eventHandlers);
 
     useErrors([{ isError, error }]);
+    useEffect(() => {
+      getOrSaveFromStorage({ key: NEW_MESSAGE_ALERT, value: newMessagesAlert });
+    }, [newMessagesAlert]);
 
     return (
       <div>
@@ -65,12 +80,7 @@ const AppLayout = () => (WrappedComponent) => {
               w="70vw"
               chats={data?.chats}
               chatId={chatId}
-              newMessagesAlert={[
-                {
-                  chatId: "1",
-                  count: 4,
-                },
-              ]}
+              newMessagesAlert={newMessagesAlert}
               handleDeleteChat={handleDeleteChat}
             />
           </Drawer>
@@ -90,12 +100,7 @@ const AppLayout = () => (WrappedComponent) => {
               <ChatList
                 chats={data?.chats}
                 chatId={chatId}
-                newMessagesAlert={[
-                  {
-                    chatId: "1",
-                    count: 4,
-                  },
-                ]}
+                newMessagesAlert={newMessagesAlert}
                 handleDeleteChat={handleDeleteChat}
               ></ChatList>
             )}

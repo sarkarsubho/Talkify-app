@@ -20,7 +20,12 @@ import { createUser } from "./seedres/user.js";
 import { Server } from "socket.io";
 import { createServer } from "http";
 import { v4 as uuid } from "uuid";
-import { NEW_MESSAGE_ALERT, NEW_Message } from "./constants/events.js";
+import {
+  NEW_MESSAGE_ALERT,
+  NEW_Message,
+  START_TYPING,
+  STOP_TYPING,
+} from "./constants/events.js";
 import { getSockets } from "./lib/helper.js";
 import { Message } from "./models/message.model.js";
 import { corsOption } from "./constants/config.js";
@@ -92,8 +97,6 @@ io.use((socket, next) => {
 
 // socket started here
 io.on("connection", (socket) => {
-
-
   console.log("connected socket server with", socket.id);
   const user = socket.user;
   //  console.log((user));
@@ -131,6 +134,20 @@ io.on("connection", (socket) => {
     } catch (error) {
       console.log(error);
     }
+  });
+
+  socket.on(START_TYPING, ({ members, chatId }) => {
+    console.log("Typing...", chatId);
+
+    const membersSockets = getSockets(members);
+    socket.to(membersSockets).emit(START_TYPING, { chatId });
+  });
+
+  socket.on(STOP_TYPING, ({ members, chatId }) => {
+    console.log("StopTyping...", chatId);
+
+    const membersSockets = getSockets(members);
+    socket.to(membersSockets).emit(STOP_TYPING, { chatId });
   });
 
   socket.on("disconnect", () => {
