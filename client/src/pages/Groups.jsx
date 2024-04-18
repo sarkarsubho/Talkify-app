@@ -27,6 +27,9 @@ import { Link } from "../components/styles/StyledComponents";
 import AvatarCard from "../components/shared/AvatarCard";
 import { sampleChats, sampleUsers } from "../constants/sampleData";
 import UserItems from "../components/shared/UserItems";
+import { useMyGroupsQuery } from "../redux/api/api";
+import { useErrors } from "../hooks/hook";
+import { LayoutLoader } from "../components/Layout/Loaders";
 
 const ConformDeleteDialog = lazy(() =>
   import("../components/dialogs/ConformDeleteDialog")
@@ -42,8 +45,19 @@ const Groups = () => {
   const [isEdit, setIsEdit] = useState(false);
   const [groupName, setGroupName] = useState("");
   const [conformDeleteDialog, setConformDeleteDialog] = useState(false);
-
   const isAddMember = false;
+
+  const myGroups = useMyGroupsQuery("");
+
+  console.log("groups data", myGroups.data)
+
+  const errors = [
+    {
+      isError: myGroups.isError,
+      error: myGroups.error,
+    },
+  ];
+  useErrors(errors);
 
   // console.log(chatId);
   const handleMobile = () => {
@@ -157,7 +171,9 @@ const Groups = () => {
       setIsEdit(false);
     };
   }, [chatId]);
-  return (
+  return myGroups.isLoading ? (
+    <LayoutLoader></LayoutLoader>
+  ) : (
     <Grid container height={"100vh"}>
       <Grid
         item
@@ -339,7 +355,7 @@ const GroupListItem = memo(({ group, chatId }) => {
         }
       }}
       sx={{
-        borderBottom: "2px solid gray"
+        borderBottom: "2px solid gray",
       }}
     >
       <Stack direction={"row"} spacing={"1rem"} alignItems={"center"}>

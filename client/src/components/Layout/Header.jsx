@@ -158,7 +158,7 @@ const Header = () => {
         </Suspense>
       )}
       {/* newGroup */}
-      {isSearch && (
+      {isNewGroup && (
         <Suspense fallback={<Backdrop open></Backdrop>}>
           <NewGroupDialog></NewGroupDialog>
         </Suspense>
