@@ -27,7 +27,7 @@ import { Link } from "../components/styles/StyledComponents";
 import AvatarCard from "../components/shared/AvatarCard";
 import { sampleChats, sampleUsers } from "../constants/sampleData";
 import UserItems from "../components/shared/UserItems";
-import { useMyGroupsQuery } from "../redux/api/api";
+import { useChatDetailsQuery, useMyGroupsQuery } from "../redux/api/api";
 import { useErrors } from "../hooks/hook";
 import { LayoutLoader } from "../components/Layout/Loaders";
 
@@ -49,15 +49,30 @@ const Groups = () => {
 
   const myGroups = useMyGroupsQuery("");
 
-  console.log("groups data", myGroups.data)
+  const groupDetails = useChatDetailsQuery(
+    { chatId, populate: true },
+    { skip: !chatId }
+  );
+
+
+  // console.log("groups data", myGroups.data);
+  console.log("groupsDetails data", groupDetails?.data);
 
   const errors = [
     {
       isError: myGroups.isError,
       error: myGroups.error,
     },
+    {
+      isError: groupDetails.isError,
+      error: groupDetails.error,
+    },
   ];
   useErrors(errors);
+
+  useEffect(()=>{
+
+  },[]);
 
   // console.log(chatId);
   const handleMobile = () => {
@@ -186,7 +201,10 @@ const Groups = () => {
         sm={4}
         bgcolor={orange}
       >
-        <GroupList myGroups={sampleChats} chatId={chatId}></GroupList>
+        <GroupList
+          myGroups={myGroups?.data?.groups}
+          chatId={chatId}
+        ></GroupList>
       </Grid>
       <Grid
         item
@@ -308,7 +326,7 @@ const Groups = () => {
       >
         <GroupList
           w={"50vw"}
-          myGroups={sampleChats}
+          myGroups={myGroups?.data?.groups}
           chatId={chatId}
         ></GroupList>
       </Drawer>

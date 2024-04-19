@@ -199,6 +199,7 @@ const Chat = ({ chatId, user }) => {
         style={{
           height: "10%",
         }}
+        onSubmitCapture={handleSubmit}
         onSubmit={handleSubmit}
       >
         <Stack

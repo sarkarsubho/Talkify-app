@@ -22,8 +22,8 @@ const NewGroup = () => {
   const dispatch = useDispatch();
   const { isNewGroup } = useSelector((state) => state.misc);
   const { isError, isLoading, error, data } = useAvailableFriendsQuery("");
-  const [createNewGroup, isLoadingNewGroup] =
-    useAsyncMutation(useNewGroupMutation);
+
+  const [createNewGroup, isLoadingNewGroup] = useAsyncMutation(useNewGroupMutation);
 
   const [groupName, setGroupName] = useState("");
   const [selectedMembers, setSelectedMembers] = useState([]);
@@ -50,7 +50,10 @@ const NewGroup = () => {
       return toast.error("Groups must contain at least 3 members...");
 
     // create groups
-    createNewGroup("Creating New Group...",{ name: groupName, members: selectedMembers });
+    createNewGroup("Creating New Group...", {
+      name: groupName,
+      members: selectedMembers,
+    });
 
     closeHandler();
   };
@@ -81,7 +84,7 @@ const NewGroup = () => {
                   user={e}
                   handler={selectMemberHandler}
                   // pass the id here
-                  isAdded={selectedMembers.includes(e)}
+                  isAdded={selectedMembers.includes(e._id)}
                 ></UserItems>
               );
             })
