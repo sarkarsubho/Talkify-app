@@ -27,8 +27,14 @@ import { Link } from "../components/styles/StyledComponents";
 import AvatarCard from "../components/shared/AvatarCard";
 import { sampleChats, sampleUsers } from "../constants/sampleData";
 import UserItems from "../components/shared/UserItems";
-import { useChatDetailsQuery, useMyGroupsQuery } from "../redux/api/api";
-import { useErrors } from "../hooks/hook";
+import {
+  useAddGroupMembersMutation,
+  useChatDetailsQuery,
+  useMyGroupsQuery,
+  useRemoveGroupMemberMutation,
+  useRenameGroupMutation,
+} from "../redux/api/api";
+import { useAsyncMutation, useErrors } from "../hooks/hook";
 import { LayoutLoader } from "../components/Layout/Loaders";
 
 const ConformDeleteDialog = lazy(() =>
@@ -45,6 +51,9 @@ const Groups = () => {
   const [isEdit, setIsEdit] = useState(false);
   const [groupName, setGroupName] = useState("");
   const [conformDeleteDialog, setConformDeleteDialog] = useState(false);
+
+  const [members, setMembers] = useState([]);
+
   const isAddMember = false;
 
   const myGroups = useMyGroupsQuery("");
@@ -54,6 +63,15 @@ const Groups = () => {
     { skip: !chatId }
   );
 
+  const [updateGroup, isLoadingGroupName] = useAsyncMutation(
+    useRenameGroupMutation
+  );
+  const [removeMember, isLoadingRemoveMember] = useAsyncMutation(
+    useRemoveGroupMemberMutation
+  );
+  const [addMember, isLoadingAddMember] = useAsyncMutation(
+    useAddGroupMembersMutation
+  );
 
   // console.log("groups data", myGroups.data);
   console.log("groupsDetails data", groupDetails?.data);
@@ -70,9 +88,20 @@ const Groups = () => {
   ];
   useErrors(errors);
 
-  useEffect(()=>{
+  useEffect(() => {
+    if (groupDetails.data) {
+      setGroupName(groupDetails.data.chat.name);
+      // setGRup name updated value
+      setMembers(groupDetails.data.chat.members);
+    }
 
-  },[]);
+    return () => {
+      // setGroupName("");
+      // // setGRup name updated value
+      // setMembers([]);
+      // setIsEdit(false);
+    };
+  }, [groupDetails.data]);
 
   // console.log(chatId);
   const handleMobile = () => {
@@ -88,6 +117,7 @@ const Groups = () => {
 
   const updateGroupHandler = () => {
     setIsEdit(false);
+    updateGroup("Updating Group Name...", { chatId, name: groupName });
   };
 
   const IconBtns = (
@@ -142,14 +172,20 @@ const Groups = () => {
               value={groupName}
               onChange={(e) => setGroupName(e.target.value)}
             ></TextField>
-            <IconButton onClick={updateGroupHandler}>
+            <IconButton
+              disabled={isLoadingGroupName}
+              onClick={updateGroupHandler}
+            >
               <DoneIcon></DoneIcon>
             </IconButton>
           </>
         ) : (
           <>
-            <Typography variant="h4">Group Name</Typography>
-            <IconButton onClick={() => setIsEdit(true)}>
+            <Typography variant="h4">{groupName}</Typography>
+            <IconButton
+              onClick={() => setIsEdit(true)}
+              disabled={isLoadingGroupName}
+            >
               <EditIcon></EditIcon>
             </IconButton>
           </>
@@ -247,7 +283,7 @@ const Groups = () => {
             >
               {/* member Card */}
 
-              {sampleUsers.map((m, i) => {
+              {members.map((m, i) => {
                 return (
                   <UserItems
                     key={m._id}

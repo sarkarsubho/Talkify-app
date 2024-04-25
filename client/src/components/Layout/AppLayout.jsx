@@ -11,7 +11,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { setIsMobile } from "../../redux/reducers/misc";
 import { useErrors, useSocketEvents } from "../../hooks/hook";
 import { getSocket } from "../../socket";
-import { NEW_MESSAGE_ALERT, NEW_REQUEST } from "../../constants/events";
+import {
+  NEW_MESSAGE_ALERT,
+  NEW_REQUEST,
+  REFETCH_CHATS,
+} from "../../constants/events";
 import {
   incrementNotification,
   setNewMessagesAlert,
@@ -45,7 +49,7 @@ const AppLayout = () => (WrappedComponent) => {
       dispatch(setIsMobile(false));
     };
 
-    const newMessageAlertHandler = useCallback(
+    const newMessageAlertListener = useCallback(
       (data) => {
         if (data.chatId === chatId) return;
         dispatch(setNewMessagesAlert(data));
@@ -53,13 +57,17 @@ const AppLayout = () => (WrappedComponent) => {
       },
       [chatId]
     );
-    const newRequestHandler = useCallback(() => {
+    const newRequestListener = useCallback(() => {
       dispatch(incrementNotification());
     }, [dispatch]);
+    const refetchListener = useCallback(() => {
+      refetch();
+    }, [refetch]);
 
     const eventHandlers = {
-      [NEW_MESSAGE_ALERT]: newMessageAlertHandler,
-      [NEW_REQUEST]: newRequestHandler,
+      [NEW_MESSAGE_ALERT]: newMessageAlertListener,
+      [NEW_REQUEST]: newRequestListener,
+      [REFETCH_CHATS]: refetchListener,
     };
     useSocketEvents(socket, eventHandlers);
 
