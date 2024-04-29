@@ -1,20 +1,3 @@
-import React, { Suspense, lazy, memo, useEffect, useState } from "react";
-import AppLayout from "../components/Layout/AppLayout";
-import {
-  Backdrop,
-  Box,
-  Button,
-  ButtonGroup,
-  Drawer,
-  Grid,
-  IconButton,
-  Stack,
-  TextField,
-  Tooltip,
-  Typography,
-} from "@mui/material";
-import { backgroundGradient, matBlack, orange } from "../constants/color";
-import { useNavigate, useSearchParams } from "react-router-dom";
 import {
   Add as AddIcon,
   Delete as DeleteIcon,
@@ -23,19 +6,35 @@ import {
   KeyboardBackspace as KeyboardBackspaceIcon,
   Menu as MenuIcon,
 } from "@mui/icons-material";
-import { Link } from "../components/styles/StyledComponents";
-import AvatarCard from "../components/shared/AvatarCard";
-import { sampleChats, sampleUsers } from "../constants/sampleData";
-import UserItems from "../components/shared/UserItems";
 import {
-  useAddGroupMembersMutation,
+  Backdrop,
+  Box,
+  Button,
+  CircularProgress,
+  Drawer,
+  Grid,
+  IconButton,
+  Stack,
+  TextField,
+  Tooltip,
+  Typography,
+} from "@mui/material";
+import React, { Suspense, lazy, memo, useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { LayoutLoader } from "../components/Layout/Loaders";
+import AvatarCard from "../components/shared/AvatarCard";
+import UserItems from "../components/shared/UserItems";
+import { Link } from "../components/styles/StyledComponents";
+import { backgroundGradient, matBlack, orange } from "../constants/color";
+import { useAsyncMutation, useErrors } from "../hooks/hook";
+import {
   useChatDetailsQuery,
   useMyGroupsQuery,
   useRemoveGroupMemberMutation,
   useRenameGroupMutation,
 } from "../redux/api/api";
-import { useAsyncMutation, useErrors } from "../hooks/hook";
-import { LayoutLoader } from "../components/Layout/Loaders";
+import { setIsAddMember } from "../redux/reducers/misc";
 
 const ConformDeleteDialog = lazy(() =>
   import("../components/dialogs/ConformDeleteDialog")
@@ -46,6 +45,7 @@ const AddMemberDialog = lazy(() =>
 
 const Groups = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [isMobileMenu, setISMobileMenu] = useState(false);
   const chatId = useSearchParams()[0].get("group");
   const [isEdit, setIsEdit] = useState(false);
@@ -54,7 +54,7 @@ const Groups = () => {
 
   const [members, setMembers] = useState([]);
 
-  const isAddMember = false;
+  const { isAddMember } = useSelector((state) => state.misc);
 
   const myGroups = useMyGroupsQuery("");
 
@@ -68,9 +68,6 @@ const Groups = () => {
   );
   const [removeMember, isLoadingRemoveMember] = useAsyncMutation(
     useRemoveGroupMemberMutation
-  );
-  const [addMember, isLoadingAddMember] = useAsyncMutation(
-    useAddGroupMembersMutation
   );
 
   // console.log("groups data", myGroups.data);
@@ -96,10 +93,10 @@ const Groups = () => {
     }
 
     return () => {
-      // setGroupName("");
-      // // setGRup name updated value
-      // setMembers([]);
-      // setIsEdit(false);
+      setGroupName("");
+      // setGRup name updated value
+      setMembers([]);
+      setIsEdit(false);
     };
   }, [groupDetails.data]);
 
@@ -205,10 +202,13 @@ const Groups = () => {
     closeConformDeleteHandler();
   };
 
-  const openAddMemberHandler = () => {};
+  const openAddMemberHandler = () => {
+    dispatch(setIsAddMember(true));
+  };
 
-  const removeMemberHandler = (id) => {
-    console.log("member handler Id", id);
+  const removeMemberHandler = (userId) => {
+    // console.log("member handler Id", userId);
+    removeMember("Removing Member....", { chatId, userId });
   };
   useEffect(() => {
     // fetch group name and set
@@ -283,20 +283,25 @@ const Groups = () => {
             >
               {/* member Card */}
 
-              {members.map((m, i) => {
-                return (
-                  <UserItems
-                    key={m._id}
-                    user={m}
-                    styling={{
-                      boxShadow: "0 0 0.5rem rgba(0,0,0,0.2)",
-                      padding: "1rem 2rem",
-                      borderRadius: "0.5rem",
-                    }}
-                    handler={removeMemberHandler}
-                  ></UserItems>
-                );
-              })}
+              {isLoadingRemoveMember ? (
+                <CircularProgress />
+              ) : (
+                members.map((m, i) => {
+                  return (
+                    <UserItems
+                      key={m._id}
+                      user={m}
+                      styling={{
+                        boxShadow: "0 0 0.5rem rgba(0,0,0,0.2)",
+                        padding: "1rem 2rem",
+                        borderRadius: "0.5rem",
+                      }}
+                      isAdded
+                      handler={removeMemberHandler}
+                    ></UserItems>
+                  );
+                })
+              )}
             </Stack>
 
             {/* Button Group */}
@@ -336,7 +341,7 @@ const Groups = () => {
 
       {isAddMember && (
         <Suspense fallback={<Backdrop open></Backdrop>}>
-          <AddMemberDialog />
+          <AddMemberDialog chatId={chatId} />
         </Suspense>
       )}
 

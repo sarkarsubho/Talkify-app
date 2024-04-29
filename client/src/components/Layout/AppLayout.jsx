@@ -1,6 +1,6 @@
 import { Drawer, Grid, Skeleton } from "@mui/material";
 import React, { useCallback, useEffect } from "react";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { sampleChats } from "../../constants/sampleData";
 import Title from "../shared/Title";
 import ChatList from "../specific/ChatList";
@@ -25,6 +25,7 @@ import { getOrSaveFromStorage } from "../../lib/features";
 const AppLayout = () => (WrappedComponent) => {
   return (props) => {
     const params = useParams();
+    const navigate=useNavigate();
     const chatId = params.chatId;
     const dispatch = useDispatch();
     const { isMobile } = useSelector((state) => state.misc);
@@ -62,7 +63,8 @@ const AppLayout = () => (WrappedComponent) => {
     }, [dispatch]);
     const refetchListener = useCallback(() => {
       refetch();
-    }, [refetch]);
+      navigate("/")
+    }, [refetch,navigate]);
 
     const eventHandlers = {
       [NEW_MESSAGE_ALERT]: newMessageAlertListener,

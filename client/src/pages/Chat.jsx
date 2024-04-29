@@ -24,6 +24,7 @@ import { useDispatch } from "react-redux";
 import { setIsFileMenu } from "../redux/reducers/misc";
 import { removeNewMessagesAlert } from "../redux/reducers/chat";
 import { TypingLoader } from "../components/Layout/Loaders";
+import { useNavigate } from "react-router-dom";
 
 // const user = {
 //   _id: "hfksdanfsadkl",
@@ -34,6 +35,7 @@ const Chat = ({ chatId, user }) => {
   const containerRef = useRef(null); // using this ref for infinite scrolling.
   const socket = getSocket();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [message, setMessage] = useState("");
   const [page, setPage] = useState(1);
@@ -110,6 +112,10 @@ const Chat = ({ chatId, user }) => {
     if (bottomRef.current)
       bottomRef.current.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
+
+  useEffect(() => {
+    if (!chatDetails.isError) return navigate("/");
+  }, [chatDetails.isError]);
 
   // this function should not create every time thats why using useCallback. for event handlers
 

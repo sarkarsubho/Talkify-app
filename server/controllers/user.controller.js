@@ -10,7 +10,7 @@ import { tryCatch } from "../middlewares/error.js";
 import { ErrorHandler } from "../utils/utility.js";
 import { Chat } from "../models/chat.model.js";
 import { Request } from "../models/request.model.js";
-import { NEW_REQUEST, REFATCH_CHATS } from "../constants/events.js";
+import { NEW_REQUEST, REFETCH_CHATS } from "../constants/events.js";
 import { getOtherMember } from "../lib/helper.js";
 
 // create a new user and save the token in cookie
@@ -173,7 +173,7 @@ const acceptFriendRequest = tryCatch(async (req, res, next) => {
     request.deleteOne(),
   ]);
 
-  emitEvent(req, REFATCH_CHATS, members);
+  emitEvent(req, REFETCH_CHATS, members);
 
   return res.status(200).json({
     success: true,
