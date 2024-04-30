@@ -30,14 +30,14 @@ import { SocketProvider } from "../socket";
 export const AllRoutes = () => {
   const dispatch = useDispatch();
   const { user, loader } = useSelector((state) => state.auth);
-  console.log(user);
+  // console.log(user);
 
   useEffect(() => {
-    console.log(server);
+    // console.log(server);
     axios
       .get(`${server}/api/v1/user/me`, { withCredentials: true })
       .then(({ data }) => {
-        console.log("user", data);
+        // console.log("user", data);
         dispatch(userExists(data.user));
       })
       .catch((er) => {

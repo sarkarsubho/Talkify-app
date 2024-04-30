@@ -30,6 +30,7 @@ import { backgroundGradient, matBlack, orange } from "../constants/color";
 import { useAsyncMutation, useErrors } from "../hooks/hook";
 import {
   useChatDetailsQuery,
+  useDeleteChatMutation,
   useMyGroupsQuery,
   useRemoveGroupMemberMutation,
   useRenameGroupMutation,
@@ -68,6 +69,9 @@ const Groups = () => {
   );
   const [removeMember, isLoadingRemoveMember] = useAsyncMutation(
     useRemoveGroupMemberMutation
+  );
+  const [deleteGroup, isLoadingDeleteGroup] = useAsyncMutation(
+    useDeleteChatMutation
   );
 
   // console.log("groups data", myGroups.data);
@@ -199,6 +203,8 @@ const Groups = () => {
   };
 
   const deleteHandler = () => {
+    deleteGroup("Deleting Group...", chatId);
+    navigate("/groups");
     closeConformDeleteHandler();
   };
 

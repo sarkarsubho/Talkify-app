@@ -4,3 +4,8 @@ export const server =import.meta.env.VITE_SERVER
 //  something went wrong at the time of accept friend request
 // no user info after login
 // add loading and disabled the register button
+
+// **
+// can add admin button at for change the admin in groups
+// delete message functionality.
+// make notification from the server and socket both
