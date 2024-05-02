@@ -185,12 +185,10 @@ const removeMember = tryCatch(async (req, res, next) => {
   );
 
   await chat.save();
-  emitEvent(
-    req,
-    Alert,
-    chat.members,
-    `${userThatWillBeRemoved.name} has been removed from the group.`
-  );
+  emitEvent(req, Alert, chat.members, {
+    message: `${userThatWillBeRemoved.name} has been removed from the group.`,
+    chatId,
+  });
 
   emitEvent(req, REFETCH_CHATS, allChatMembers);
 
@@ -230,11 +228,14 @@ const leaveGroup = tryCatch(async (req, res, next) => {
     chat.save(),
   ]);
 
-  emitEvent(req, Alert, chat.members, `${user.name} has left the group.`);
+  emitEvent(req, Alert, chat.members, {
+    message: `${user.name} has left the group.`,
+    chatId,
+  });
 
   return res
     .status(200)
-    .json({ success: true, message: "Members removed successfully." });
+    .json({ success: true, message: "Leaved group successfully." });
 });
 
 const sendAttachment = tryCatch(async (req, res, next) => {
@@ -353,6 +354,7 @@ const deleteChat = tryCatch(async (req, res, next) => {
   const chatId = req.params.id;
 
   const chat = await Chat.findById(chatId);
+  // console.log(chat);
   if (!chat) return next(new ErrorHandler("Chat not Found !", 404));
 
   const members = chat.members;
@@ -392,9 +394,10 @@ const deleteChat = tryCatch(async (req, res, next) => {
 
   emitEvent(req, REFETCH_CHATS, chat.members);
 
-  return res
-    .status(200)
-    .json({ success: true, message: "Chat deleted successfully." });
+  return res.status(200).json({
+    success: true,
+    message: `${chat.groupChat ? "Group" : "Chat"} deleted successfully.`,
+  });
 });
 
 const getMessages = tryCatch(async (req, res, next) => {
