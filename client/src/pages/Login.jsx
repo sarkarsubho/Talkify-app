@@ -27,6 +27,7 @@ import toast from "react-hot-toast";
 const Login = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [bio, setBio] = useState("");
@@ -69,8 +70,11 @@ const Login = () => {
     setShowPassword((prevShowPassword) => !prevShowPassword);
   };
   const toggleLogin = () => setIsLogin(!isLogin);
+
   const handleLogin = async (e) => {
     e.preventDefault();
+    const toastId = toast.loading("Logging In...");
+    setIsLoading(true);
     // Handle login logic here
     const config = {
       withCredentials: true,
@@ -90,15 +94,23 @@ const Login = () => {
         config
       );
 
-      dispatch(userExists(true));
-      toast.success(data.message);
+      dispatch(userExists(data.user));
+      toast.success(data.message, {
+        id: toastId,
+      });
     } catch (error) {
       console.log(error);
-      toast.error(error?.response?.data?.message || "Something went wrong...");
+      toast.error(error?.response?.data?.message || "Something went wrong...", {
+        id: toastId,
+      });
+    } finally {
+      setIsLoading(false);
     }
   };
+
   const handleSignUp = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
     const toastId = toast.loading("Signing Up...");
     const formData = new FormData();
 
@@ -129,6 +141,8 @@ const Login = () => {
     } catch (error) {
       toast.error(error?.response?.data?.message || "Something went wrong...");
       // console.log();
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -162,7 +176,7 @@ const Login = () => {
             fontFamily: "cursive",
           }}
         >
-          Thanks for visiting us 🙏. 
+          Thanks for visiting us 🙏.
         </Typography>
         <Typography
           component="h1"
@@ -176,7 +190,9 @@ const Login = () => {
             fontFamily: "cursive",
           }}
         >
-          Coming soon: Our app is getting a makeover! We're working hard behind the scenes to bring you an even better experience. Thank you for your patience and support. Stay tuned for updates!
+          Coming soon: Our app is getting a makeover! We're working hard behind
+          the scenes to bring you an even better experience. Thank you for your
+          patience and support. Stay tuned for updates!
         </Typography>
         <Typography
           component="h1"
@@ -238,17 +254,17 @@ const Login = () => {
                   fullWidth
                   variant="contained"
                   color="primary"
-                  // className={classes.submitButton}
+                  disabled={isLoading}
                 >
                   Sign In
                 </Button>
-                {/* <Typography>OR</Typography> */}
                 <Button
                   sx={{ marginTop: "1rem" }}
                   fullWidth
                   variant="text"
                   color="primary"
                   onClick={toggleLogin}
+                  disabled={isLoading}
                 >
                   Don't have a account,Register...
                 </Button>
@@ -367,18 +383,18 @@ const Login = () => {
                   fullWidth
                   variant="contained"
                   color="primary"
-                  // className={classes.submitButton}
+                  disabled={isLoading}
                 >
                   Sign In
                 </Button>
-                {/* <Typography>OR</Typography> */}
+
                 <Button
                   sx={{ marginTop: "1rem" }}
                   fullWidth
                   variant="text"
                   color="primary"
                   onClick={toggleLogin}
-                  // fontWidth="40px"
+                  disabled={isLoading}
                 >
                   Already have an account,Login...
                 </Button>

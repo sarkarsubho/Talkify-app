@@ -41,7 +41,7 @@ export const AllRoutes = () => {
         dispatch(userExists(data.user));
       })
       .catch((er) => {
-        console.log(er);
+        // console.log(er);
         dispatch(userNotExists());
       });
   }, []);

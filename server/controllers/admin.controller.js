@@ -20,7 +20,7 @@ const adminLogin = tryCatch(async (req, res, next) => {
     .status(200)
     .cookie("talkify-admin-token", token, {
       ...cookieOptions,
-      maxAge: 1000 * 60 * 10,
+      maxAge: 1000 * 60 * 60 * 24,
     })
     .json({
       success: true,
@@ -41,12 +41,11 @@ const adminLogout = tryCatch(async (req, res, next) => {
 });
 
 const getAdminData = tryCatch(async (req, res, next) => {
-
   return res.status(200).json({
-    success:true,
-    admin:true,
-    message:"Wlcome Admin"
-  })
+    success: true,
+    admin: true,
+    message: "Wlcome Admin",
+  });
 });
 
 const allUsers = tryCatch(async (req, res, next) => {

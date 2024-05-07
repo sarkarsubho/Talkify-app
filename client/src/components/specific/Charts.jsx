@@ -52,25 +52,12 @@ const LineChart = ({ value = [] }) => {
     datasets: [
       {
         data: value,
-        label: "revenue",
+        label: "Messages",
         fill: true,
         backgroundColor: litePurple,
         borderColor: purple,
       },
-      // {
-      //   data: [1, 9, 1, 19],
-      //   label: "revenue",
-      //   fill: true,
-      //   backgroundColor: "rgba(75,192,192,0.5)",
-      //   borderColor: "rgba(75,192,192,0.3)",
-      // },
-      // {
-      //   data: [1, 10, 28, 9],
-      //   label: "revenue",
-      //   fill: true,
-      //   backgroundColor: "rgba(75,102,12,0.5)",
-      //   borderColor: "rgba(75,12,12,0.3)",
-      // },
+  
     ],
   };
   return <Line data={data} options={lineChartOptions}></Line>;
