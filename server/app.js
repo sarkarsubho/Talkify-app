@@ -86,6 +86,12 @@ app.use("/api/v1/admin", adminRoute);
 // default route / home route
 app.get("/api/v1/", (req, res) => {
   res.send(
+    `<h1 style="color:green; text-align:center">Welcome to Talkify App api v1...</h1>`
+  );
+});
+
+app.get("/", (req, res) => {
+  res.send(
     `<h1 style="color:green; text-align:center">Welcome to Talkify App...</h1>`
   );
 });
