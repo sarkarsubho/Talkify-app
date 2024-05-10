@@ -164,7 +164,7 @@ const Login = () => {
           alignItems: "center",
         }}
       >
-        <Typography
+        {/* <Typography
           component="h1"
           fontSize={"2rem"}
           textAlign={"center"}
@@ -193,7 +193,7 @@ const Login = () => {
           Coming soon: Our app is getting a makeover! We're working hard behind
           the scenes to bring you an even better experience. Thank you for your
           patience and support. Stay tuned for updates!
-        </Typography>
+        </Typography> */}
         <Typography
           component="h1"
           fontSize={"2rem"}

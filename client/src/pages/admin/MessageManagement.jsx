@@ -4,8 +4,11 @@ import Table from "../../components/shared/Table";
 import { dashboardData } from "../../constants/sampleData";
 import { fileFormat, transFormImage } from "../../lib/features";
 import moment from "moment";
-import { Avatar, Box, Stack } from "@mui/material";
+import { Avatar, Box, Skeleton, Stack } from "@mui/material";
 import RendedAttachment from "../../components/shared/RendedAttachment";
+import { useFetchData } from "6pp";
+import { useErrors } from "../../hooks/hook";
+import { server } from "../../constants/config";
 const columns = [
   {
     field: "id",
@@ -23,7 +26,7 @@ const columns = [
       const { attachments } = params.row;
 
       return attachments?.length > 0
-        ? attachments.map((e,i) => {
+        ? attachments.map((e, i) => {
             const url = e.url;
             const file = fileFormat(url);
 
@@ -94,9 +97,22 @@ const columns = [
 const MessageManagement = () => {
   const [rows, setRows] = useState([]);
 
+  const { loading, data, error } = useFetchData(
+    `${server}/api/v1/admin/messages`,
+    "dashboard-messages"
+  );
+
+  useErrors([
+    {
+      isError: error,
+      error: error,
+    },
+  ]);
+
   useEffect(() => {
+   if(data){
     setRows(
-      dashboardData.messages.map((i) => ({
+      data.messages.map((i) => ({
         ...i,
         id: i._id,
         // avatar: i.avatar.map((url) => transFormImage(url, 50)),
@@ -108,15 +124,22 @@ const MessageManagement = () => {
         createdAt: moment(i.createdAt).format("MMMM Do YYYY, h:mm:ss a"),
       }))
     );
-  }, []);
+    console.log(data)
+   }
+  }, [data]);
+
   return (
     <AdminLayout>
-      <Table
-        heading={"All Messages"}
-        rows={rows}
-        columns={columns}
-        rowHeight={200}
-      ></Table>
+      {loading ? (
+        <Skeleton height={"100vh"}></Skeleton>
+      ) : (
+        <Table
+          heading={"All Messages"}
+          rows={rows}
+          columns={columns}
+          rowHeight={200}
+        ></Table>
+      )}
     </AdminLayout>
   );
 };

@@ -13,6 +13,8 @@ import { sampleMessage } from "../constants/sampleData";
 import { getSocket } from "../socket";
 import {
   Alert,
+  CHAT_JOINED,
+  CHAT_LEAVED,
   NEW_Message,
   START_TYPING,
   STOP_TYPING,
@@ -98,6 +100,7 @@ const Chat = ({ chatId, user }) => {
   };
 
   useEffect(() => {
+    socket.emit(CHAT_JOINED, { userId: user._id, members });
     dispatch(removeNewMessagesAlert(chatId));
 
     return () => {
@@ -105,6 +108,7 @@ const Chat = ({ chatId, user }) => {
       setMessages([]);
       setOldMessages([]);
       setPage(1);
+      socket.emit(CHAT_LEAVED, { userId: user._id, members });
     };
   }, [chatId]);
 
@@ -147,7 +151,7 @@ const Chat = ({ chatId, user }) => {
   );
   const alertListener = useCallback(
     (data) => {
-      if(data.chatId !== chatId) return
+      if (data.chatId !== chatId) return;
       const messageForAlert = {
         content: data.message,
         sender: {
@@ -235,7 +239,7 @@ const Chat = ({ chatId, user }) => {
           <IconButton
             type="submit"
             sx={{
-              rotate: "-30deg",
+             
               bgcolor: "teal",
               marginLeft: "1rem",
               padding: "0.5rem",

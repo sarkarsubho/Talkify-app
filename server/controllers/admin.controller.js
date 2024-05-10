@@ -74,13 +74,14 @@ const allUsers = tryCatch(async (req, res, next) => {
     users: transformUsers,
   });
 });
+
 const allChats = tryCatch(async (req, res, next) => {
   const chats = await Chat.find({})
     .populate("members", "name avatar")
     .populate("creator", "name, avatar");
 
   // can use aggrigation pipeline
-
+ 
   const transformedChats = await Promise.all(
     chats.map(async ({ members, _id, groupChat, name, creator }) => {
       const totalMessages = await Message.countDocuments({ chat: _id });
@@ -114,7 +115,7 @@ const allMessages = tryCatch(async (req, res, next) => {
     .populate("sender", "name avatar")
     .populate("chat", "groupChat");
 
-  const transformedMessages = messages.map(
+  const transformedMessages = messages.filter((e)=>e.sender !== null).map(
     ({ content, attachments, _id, sender, createdAt, chat }) => {
       return {
         _id,
@@ -131,7 +132,7 @@ const allMessages = tryCatch(async (req, res, next) => {
       };
     }
   );
-
+ 
   return res.status(200).json({
     success: true,
     messages: transformedMessages,

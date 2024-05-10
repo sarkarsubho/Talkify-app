@@ -21,8 +21,11 @@ import { Server } from "socket.io";
 import { createServer } from "http";
 import { v4 as uuid } from "uuid";
 import {
+  CHAT_JOINED,
+  CHAT_LEAVED,
   NEW_MESSAGE_ALERT,
   NEW_Message,
+  ONLINE_USERS,
   START_TYPING,
   STOP_TYPING,
 } from "./constants/events.js";
@@ -40,6 +43,7 @@ const port = process.env.PORT || 3000;
 const adminSecretKey = process.env.ADMIN_SECRET_KEY || "123abc96558";
 
 const userSocketIds = new Map();
+const onlineUsers = new Set();
 
 // console.log(mongoURI);
 
@@ -97,7 +101,7 @@ io.use((socket, next) => {
 
 // socket started here
 io.on("connection", (socket) => {
-  console.log("connected socket server with", socket.id);
+  // console.log("connected socket server with", socket.id);
   const user = socket.user;
   //  console.log((user));
   userSocketIds.set(user._id.toString(), socket.id);
@@ -115,7 +119,7 @@ io.on("connection", (socket) => {
       chat: chatId,
       createdAt: new Date().toISOString(),
     };
-    console.log("Emiting Messsage for real time", members);
+    // console.log("Emiting Messsage for real time", members);
 
     const messageForDb = {
       content: message,
@@ -132,27 +136,44 @@ io.on("connection", (socket) => {
     try {
       await Message.create(messageForDb);
     } catch (error) {
-      console.log(error);
+      // console.log(error);
+      throw new Error(error);
     }
   });
 
   socket.on(START_TYPING, ({ members, chatId }) => {
-    console.log("Typing...", chatId);
+    // console.log("Typing...", chatId);
 
     const membersSockets = getSockets(members);
     socket.to(membersSockets).emit(START_TYPING, { chatId });
   });
 
   socket.on(STOP_TYPING, ({ members, chatId }) => {
-    console.log("StopTyping...", chatId);
+    // console.log("StopTyping...", chatId);
 
     const membersSockets = getSockets(members);
     socket.to(membersSockets).emit(STOP_TYPING, { chatId });
   });
 
+  socket.on(CHAT_JOINED, ({ userId, members }) => {
+    onlineUsers.add(userId.toString());
+
+    const membersSocket = getSockets(members);
+    io.to(membersSocket).emit(ONLINE_USERS, Array.from(onlineUsers));
+  });
+
+  socket.on(CHAT_LEAVED, ({ userId, members }) => {
+    onlineUsers.delete(userId.toString());
+
+    const membersSocket = getSockets(members);
+    io.to(membersSocket).emit(ONLINE_USERS, Array.from(onlineUsers));
+  });
+
   socket.on("disconnect", () => {
-    console.log("user disconnected");
+    // console.log("user disconnected");
     userSocketIds.delete(user._id.toString());
+    onlineUsers.delete(user._id.toString());
+    socket.broadcast.emit(ONLINE_USERS, Array.from(onlineUsers));
   });
 });
 

@@ -23,7 +23,7 @@ const columns = [
     headerClassName: "table-header",
     width: 150,
     renderCell: (params) => {
-      console.log(params.row.name, params.row.avatar);
+      // console.log(params.row.name, params.row.avatar);
       return (
         <AvatarCard
           alt={params.row.name}

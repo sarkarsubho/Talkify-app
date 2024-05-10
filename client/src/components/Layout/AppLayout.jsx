@@ -1,10 +1,11 @@
 import { Drawer, Grid, Skeleton } from "@mui/material";
-import React, { useCallback, useEffect, useRef } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import {
   NEW_MESSAGE_ALERT,
   NEW_REQUEST,
+  ONLINE_USERS,
   REFETCH_CHATS,
 } from "../../constants/events";
 import { useErrors, useSocketEvents } from "../../hooks/hook";
@@ -41,6 +42,9 @@ const AppLayout = () => (WrappedComponent) => {
 
     // console.log("socket", socket.id);
 
+    const [onlineUsers ,setOnlineUsers] =useState([]);
+
+
     const { isLoading, data, isError, error, refetch } = useMyChatsQuery("");
 
     const handleDeleteChat = (e, _id, groupChat) => {
@@ -69,15 +73,22 @@ const AppLayout = () => (WrappedComponent) => {
     const newRequestListener = useCallback(() => {
       dispatch(incrementNotification());
     }, [dispatch]);
+
     const refetchListener = useCallback(() => {
       refetch();
       navigate("/");
     }, [refetch, navigate]);
 
+    const onlineUsersListener = useCallback((data) => {
+      console.log(data);
+      setOnlineUsers(data);
+    }, []);
+
     const eventHandlers = {
       [NEW_MESSAGE_ALERT]: newMessageAlertListener,
       [NEW_REQUEST]: newRequestListener,
       [REFETCH_CHATS]: refetchListener,
+      [ONLINE_USERS]:onlineUsersListener
     };
     useSocketEvents(socket, eventHandlers);
 
@@ -104,10 +115,12 @@ const AppLayout = () => (WrappedComponent) => {
               chatId={chatId}
               newMessagesAlert={newMessagesAlert}
               handleDeleteChat={handleDeleteChat}
+              onlineUsers={onlineUsers}
             />
           </Drawer>
         )}
         <Grid container height={"calc(100vh - 4rem)"}>
+          
           <Grid
             item
             sm={4}
@@ -124,9 +137,11 @@ const AppLayout = () => (WrappedComponent) => {
                 chatId={chatId}
                 newMessagesAlert={newMessagesAlert}
                 handleDeleteChat={handleDeleteChat}
+                onlineUsers ={onlineUsers}
               ></ChatList>
             )}
           </Grid>
+
           <Grid item xs={12} sm={8} md={5} lg={6} height={"100%"}>
             <WrappedComponent
               {...props}
@@ -134,6 +149,7 @@ const AppLayout = () => (WrappedComponent) => {
               user={user}
             ></WrappedComponent>
           </Grid>
+
           <Grid
             item
             md={4}
@@ -146,6 +162,7 @@ const AppLayout = () => (WrappedComponent) => {
           >
             <Profile user={user} />
           </Grid>
+
         </Grid>
       </div>
     );

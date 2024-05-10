@@ -23,6 +23,7 @@ const ChatItem = ({
       sx={{
         padding: "0.5rem",
         borderBottom: "2px solid gray",
+        backgroundColor: sameSender ? "rgba(128, 128,128,0.6)" : "unset",
       }}
       onContextMenu={(e) => {
         console.log("context menu opened");
@@ -32,21 +33,20 @@ const ChatItem = ({
       <motion.div
         initial={{ opacity: 0, y: "-100%" }}
         whileInView={{ opacity: 1, y: 0 }}
-        transition={{delay:index*0.1}}
+        transition={{ delay: index * 0.1 }}
         style={{
           display: "flex",
           gap: "1rem",
           alignItems: "center",
           padding: ".5rem",
-          backgroundColor: sameSender ? "teal" : "unset",
+
           color: sameSender ? "white" : "unset",
           position: "relative",
           borderRadius: "4px",
         }}
       >
-        {/* <Avatar></Avatar> */}
         <AvatarCard avatar={avatar}></AvatarCard>
-        <Stack>
+        <Stack marginLeft={"-2rem"} paddingRight={"25px"}>
           <Typography>{name}</Typography>
           {newMessageAlert && (
             <Typography> {newMessageAlert.count} New Message </Typography>
