@@ -1,0 +1,15 @@
+MONGO_URI=mongo url
+
+PORT = server port
+
+JWT_SECRET=jwt secret 
+
+ADMIN_SECRET_KEY =  nay secret key 
+
+NODE_ENV=DEVELOPMENT
+
+CLIENT_URL = frontend url
+
+CLOUDINARY_CLOUD_NAME=
+CLOUDINARY_API_KEY=
+CLOUDINARY_API_SECRET=
